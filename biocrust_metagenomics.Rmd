@@ -1,0 +1,110 @@
+---                                                                                                
+title: "Metagenomics of Desert Biocrusts"
+subtitle: "Community Composition Across the American Southwest"
+author: "Andrew Budge"
+date: ""
+format:
+  html:
+    theme: sandstone
+    toc: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+library(tidyverse)
+```
+
+# Introduction
+Biological soil crusts (biocrusts) are communities of living organisms that form matrix on the soil surface, binding soil particles together in a mat-like structure. They are found primarily in arid and semi-arid environments and are estimated to cover roughly 12% of Earth's land surface ([Rodriguez-Caballero et al., 2022](https://pmc.ncbi.nlm.nih.gov/articles/PMC9291340/)).
+
+Biocrusts play a Key ecological role in desert ecosystems. The organisms within them carry out key biological functions, including nitrogen and carbon fixation. They also influence the physical properties of the soil, affecting albedo, surface stabilization, and the retention of water and nutrients. These crusts, while playing such an important role, are also fragile can be easily damaged by grazing, fire, and human activity and take long times to heal.  
+
+This project uses shotgun metagenomic sequencing to examine the bacterial, fungal, and viral communities of desert biocrusts across three sites in the American Southwest: Utah, New Mexico, and Arizona.
+
+# Methods
+
+## Data Acquisition
+
+Six PacBio HiFi metagenome samples were selected from the NCBI Sequence Read Archive (SRA). Samples were chosen to represent three geographic sites across the American Southwest, with two samples per site: Utah (HS003, HSN023), New Mexico (CYAN3, SEV30), and Arizona (SON57, SON60). Sample metadata was retrieved using the `rentrez` R package to query the SRA and BioSample databases. Raw reads were downloaded using `prefetch` and `fastq-dump` from the SRA Toolkit.
+
+## Quality Control
+
+Raw reads were filtered using `chopper` with a minimum quality score of 20 and a minimum read length of 1,000 bp. Less than 500 reads per sample were removed.
+
+```{bash, eval=FALSE, echo=TRUE}
+# Stream decompress -> filter -> recompress
+pigz -dc sample.fastq.gz | chopper -q 20 -l 1000 | pigz > sample_QC.fastq.gz
+```
+
+## Taxonomic Classification
+
+Taxonomic classification was performed using Kraken2 with the PlusPF-8 database, which includes bacterial, archaeal, viral, fungal, and protozoan reference sequences. This database was selected to enable analysis across all three domains of interest (bacteria, fungi, and viruses).
+
+```{bash, eval=FALSE, echo=TRUE}
+# Classify reads against PlusPF-8 database
+kraken2 --db ~/databases/k2_pluspf_08gb \
+    --threads 8 \
+    --output sample.out \
+    --report sample.report \
+    sample_QC.fastq.gz
+```
+
+# Results
+
+## Community Composition
+
+```{r load-data, echo=TRUE}
+# Read in metadata
+meta_data <- read.csv("data/metadata/biocrust_metadata.csv")
+
+# Read all Kraken2 reports into one data frame
+master_kraken2_data <- list.files("data/kraken2/reports", full.names = TRUE) %>%
+  map_dfr(function(f) {
+    srr_num <- basename(gsub(".report", "", f))
+    read_tsv(f, col_names = c("pct", "reads_clade", "reads_direct", "rank", "taxid", "name")) %>%
+      mutate(name = str_trim(name), srr = srr_num)
+  })
+
+# Join with metadata and extract sample names
+master_kraken2_data <- master_kraken2_data %>%
+  left_join(meta_data, by = "srr") %>%
+  mutate(sample = str_extract(.data$title, "(?<=- ).*"))
+```
+
+```{r phylum-barplot, echo=TRUE, fig.width=10, fig.height=6}
+# Filter to phylum level, at least 1% abundance
+phylum_data <- master_kraken2_data %>%
+  filter(rank == "P", pct > 1) %>%
+  select(sample, name, pct, geo_loc_name)
+
+# Community composition barplot
+ggplot(phylum_data, aes(x = sample, y = pct, fill = fct_reorder(name, pct))) +
+  geom_col() +
+  facet_wrap(~ geo_loc_name, scales = "free_x") +
+  scale_fill_viridis_d(option = "A", begin = 0.1, end = 0.85) +
+  labs(
+    title = "Desert Biocrust Community Composition",
+    x = "Sample ID",
+    y = "Relative Abundance (%)",
+    fill = NULL
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(legend.position = "bottom",
+        plot.title = element_text(hjust = 0.5)) +
+  guides(fill = guide_legend(nrow = 2))
+```
+
+## Bacterial Communities
+
+
+## Fungal Communities
+
+
+## Viral Communities
+
+
+# Statistical Analysis
+
+
+# Conclusions
+
