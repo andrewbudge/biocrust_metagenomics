@@ -1,0 +1,21 @@
+# Claude
+.claude/
+
+# Sequence data
+*.fastq
+*.fastq.gz
+*.fasta
+*.fasta.gz
+*.fa
+*.fa.gz
+*.fq
+*.fq.gz
+*.sra
+
+# Kraken2 output files (large)
+data/kraken2/outputs/
+
+# R environment
+.Rhistory
+.RData
+.Rproj.user/
