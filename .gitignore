@@ -19,3 +19,6 @@ data/kraken2/outputs/
 .Rhistory
 .RData
 .Rproj.user/
+
+# The temp files for assembly
+data/assemblies/*/tmp/

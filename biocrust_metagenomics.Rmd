@@ -14,22 +14,20 @@ knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 library(tidyverse)
 ```
 
-# Introduction
 Biological soil crusts (biocrusts) are communities of living organisms that form matrix on the soil surface, binding soil particles together in a mat-like structure. They are found primarily in arid and semi-arid environments and are estimated to cover roughly 12% of Earth's land surface ([Rodriguez-Caballero et al., 2022](https://pmc.ncbi.nlm.nih.gov/articles/PMC9291340/)).
 
-Biocrusts play a Key ecological role in desert ecosystems. The organisms within them carry out key biological functions, including nitrogen and carbon fixation. They also influence the physical properties of the soil, affecting albedo, surface stabilization, and the retention of water and nutrients. These crusts, while playing such an important role, are also fragile can be easily damaged by grazing, fire, and human activity and take long times to heal.  
+Biocrusts play a key ecological role in desert ecosystems. The organisms within them carry out key biological functions, including nitrogen and carbon fixation. They also influence the physical properties of the soil, affecting albedo, surface stabilization, and the retention of water and nutrients. These crusts, while playing such an important role, are also fragile can be easily damaged by grazing, fire, and human activity and take a long time to heal.  
 
 This project uses shotgun metagenomic sequencing to examine the bacterial, fungal, and viral communities of desert biocrusts across three sites in the American Southwest: Utah, New Mexico, and Arizona.
 
-# Methods
 
-## Data Acquisition
+## Getting the Data
 
 Six PacBio HiFi metagenome samples were selected from the NCBI Sequence Read Archive (SRA). Samples were chosen to represent three geographic sites across the American Southwest, with two samples per site: Utah (HS003, HSN023), New Mexico (CYAN3, SEV30), and Arizona (SON57, SON60). Sample metadata was retrieved using the `rentrez` R package to query the SRA and BioSample databases. Raw reads were downloaded using `prefetch` and `fastq-dump` from the SRA Toolkit.
 
 ## Quality Control
 
-Raw reads were filtered using `chopper` with a minimum quality score of 20 and a minimum read length of 1,000 bp. Less than 500 reads per sample were removed.
+Raw reads were filtered using `chopper` with a minimum quality score of 20 and a minimum read length of 1,000 bp. Less than 500 reads per sample were removed, so we have very high quality data.
 
 ```{bash, eval=FALSE, echo=TRUE}
 # Stream decompress -> filter -> recompress
@@ -38,7 +36,7 @@ pigz -dc sample.fastq.gz | chopper -q 20 -l 1000 | pigz > sample_QC.fastq.gz
 
 ## Taxonomic Classification
 
-Taxonomic classification was performed using Kraken2 with the PlusPF-8 database, which includes bacterial, archaeal, viral, fungal, and protozoan reference sequences. This database was selected to enable analysis across all three domains of interest (bacteria, fungi, and viruses).
+Taxonomic classification done using Kraken2 with the PlusPF-8 database, which includes bacterial, archaeal, viral, fungal, and protozoan reference sequences. 
 
 ```{bash, eval=FALSE, echo=TRUE}
 # Classify reads against PlusPF-8 database
