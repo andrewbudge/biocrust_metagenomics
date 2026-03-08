@@ -70,6 +70,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="biocrust_metagenomics_files/libs/bootstrap/bootstrap.min.js"></script>
 <link href="biocrust_metagenomics_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="biocrust_metagenomics_files/libs/bootstrap/bootstrap-7ad010847a5ccf182a4e70a9d6739aca.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="biocrust_metagenomics_files/libs/quarto-diagram/mermaid.min.js"></script>
+<script src="biocrust_metagenomics_files/libs/quarto-diagram/mermaid-init.js"></script>
+<link href="biocrust_metagenomics_files/libs/quarto-diagram/mermaid.css" rel="stylesheet">
 
 
 </head>
@@ -87,6 +90,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#diversity" id="toc-diversity" class="nav-link" data-scroll-target="#diversity">Diversity</a></li>
   <li><a href="#assembly" id="toc-assembly" class="nav-link" data-scroll-target="#assembly">Assembly</a></li>
   <li><a href="#gene-annotation" id="toc-gene-annotation" class="nav-link" data-scroll-target="#gene-annotation">Gene Annotation</a></li>
+  <li><a href="#analysis-pipeline" id="toc-analysis-pipeline" class="nav-link" data-scroll-target="#analysis-pipeline">Analysis Pipeline</a></li>
   </ul>
 </nav>
 </div>
@@ -377,6 +381,41 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <figure class="figure">
 <p><img src="biocrust_metagenomics_files/figure-html/cog-plot-1.png" class="img-fluid figure-img" width="1152"></p>
 </figure>
+</div>
+</div>
+</div>
+</section>
+<section id="analysis-pipeline" class="level2">
+<h2 class="anchored" data-anchor-id="analysis-pipeline">Analysis Pipeline</h2>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+    A[Raw PacBio HiFi Reads] --&gt; B[chopper - Read QC]
+    B --&gt; C[Kraken2 on Reads - Community Composition]
+    B --&gt; D[metaMDBG - Assembly]
+    C --&gt; C1[Alpha &amp; Beta Diversity]
+    D --&gt; E[Prodigal - Gene Prediction]
+    E --&gt; F[eggNOG-mapper - Functional Annotation]
+    D --&gt; G[Kraken2 on Contigs - Contig Taxonomy]
+    D --&gt; H[seqkit - Extract Circular Contigs]
+    H --&gt; I[geNomad - Classification]
+    I --&gt; J[Chromosomes]
+    I --&gt; K[Viruses]
+    I --&gt; L[Plasmids]
+    J --&gt; M[Bakta - Genome Annotation]
+    M --&gt; N[LoVis4u / gggenes - Visualization]
+    K --&gt; O[CheckV - Quality Assessment]
+    O --&gt; P[Pharokka - Phage Annotation]
+    L --&gt; Q[Plasmid Analysis]
+    F --&gt; R[COG Functional Profiles]
+    G --&gt; S[Taxonomy-Function Linkage]
+    F --&gt; S
+</pre>
+</div>
+<p></p></figure><p></p>
 </div>
 </div>
 </div>

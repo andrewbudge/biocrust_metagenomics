@@ -272,3 +272,29 @@ ggplot(COG_proportions, aes(x = reorder(COG_description, proportion), y = propor
   )
 ```
 
+## Analysis Pipeline
+
+```{mermaid}
+flowchart TD
+    A[Raw PacBio HiFi Reads] --> B[chopper - Read QC]
+    B --> C[Kraken2 on Reads - Community Composition]
+    B --> D[metaMDBG - Assembly]
+    C --> C1[Alpha & Beta Diversity]
+    D --> E[Prodigal - Gene Prediction]
+    E --> F[eggNOG-mapper - Functional Annotation]
+    D --> G[Kraken2 on Contigs - Contig Taxonomy]
+    D --> H[seqkit - Extract Circular Contigs]
+    H --> I[geNomad - Classification]
+    I --> J[Chromosomes]
+    I --> K[Viruses]
+    I --> L[Plasmids]
+    J --> M[Bakta - Genome Annotation]
+    M --> N[LoVis4u / gggenes - Visualization]
+    K --> O[CheckV - Quality Assessment]
+    O --> P[Pharokka - Phage Annotation]
+    L --> Q[Plasmid Analysis]
+    F --> R[COG Functional Profiles]
+    G --> S[Taxonomy-Function Linkage]
+    F --> S
+```
+
