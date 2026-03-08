@@ -83,21 +83,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
   <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
-  <li><a href="#methods" id="toc-methods" class="nav-link" data-scroll-target="#methods">Methods</a>
-  <ul class="collapse">
-  <li><a href="#data-acquisition" id="toc-data-acquisition" class="nav-link" data-scroll-target="#data-acquisition">Data Acquisition</a></li>
-  <li><a href="#quality-control" id="toc-quality-control" class="nav-link" data-scroll-target="#quality-control">Quality Control</a></li>
-  <li><a href="#taxonomic-classification" id="toc-taxonomic-classification" class="nav-link" data-scroll-target="#taxonomic-classification">Taxonomic Classification</a></li>
-  </ul></li>
-  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results">Results</a>
-  <ul class="collapse">
-  <li><a href="#community-composition" id="toc-community-composition" class="nav-link" data-scroll-target="#community-composition">Community Composition</a></li>
-  <li><a href="#bacterial-communities" id="toc-bacterial-communities" class="nav-link" data-scroll-target="#bacterial-communities">Bacterial Communities</a></li>
-  <li><a href="#fungal-communities" id="toc-fungal-communities" class="nav-link" data-scroll-target="#fungal-communities">Fungal Communities</a></li>
-  <li><a href="#viral-communities" id="toc-viral-communities" class="nav-link" data-scroll-target="#viral-communities">Viral Communities</a></li>
-  </ul></li>
-  <li><a href="#statistical-analysis" id="toc-statistical-analysis" class="nav-link" data-scroll-target="#statistical-analysis">Statistical Analysis</a></li>
-  <li><a href="#conclusions" id="toc-conclusions" class="nav-link" data-scroll-target="#conclusions">Conclusions</a></li>
+  <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data">Data</a></li>
+  <li><a href="#diversity" id="toc-diversity" class="nav-link" data-scroll-target="#diversity">Diversity</a></li>
+  <li><a href="#assembly" id="toc-assembly" class="nav-link" data-scroll-target="#assembly">Assembly</a></li>
+  <li><a href="#gene-annotation" id="toc-gene-annotation" class="nav-link" data-scroll-target="#gene-annotation">Gene Annotation</a></li>
   </ul>
 </nav>
 </div>
@@ -129,81 +118,71 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="introduction" class="level1">
-<h1>Introduction</h1>
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
 <p>Biological soil crusts (biocrusts) are communities of living organisms that form matrix on the soil surface, binding soil particles together in a mat-like structure. They are found primarily in arid and semi-arid environments and are estimated to cover roughly 12% of Earth’s land surface (<a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC9291340/">Rodriguez-Caballero et al., 2022</a>).</p>
-<p>Biocrusts play a Key ecological role in desert ecosystems. The organisms within them carry out key biological functions, including nitrogen and carbon fixation. They also influence the physical properties of the soil, affecting albedo, surface stabilization, and the retention of water and nutrients. These crusts, while playing such an important role, are also fragile can be easily damaged by grazing, fire, and human activity and take long times to heal.</p>
+<p>Biocrusts play a key ecological role in desert ecosystems. The organisms within them carry out key biological functions, including nitrogen and carbon fixation. They also influence the physical properties of the soil, affecting albedo, surface stabilization, and the retention of water and nutrients. These crusts, while playing such an important role, are also fragile can be easily damaged by grazing, fire, and human activity and take a long time to heal.</p>
 <p>This project uses shotgun metagenomic sequencing to examine the bacterial, fungal, and viral communities of desert biocrusts across three sites in the American Southwest: Utah, New Mexico, and Arizona.</p>
 </section>
-<section id="methods" class="level1">
-<h1>Methods</h1>
-<section id="data-acquisition" class="level2">
-<h2 class="anchored" data-anchor-id="data-acquisition">Data Acquisition</h2>
-<p>Six PacBio HiFi metagenome samples were selected from the NCBI Sequence Read Archive (SRA). Samples were chosen to represent three geographic sites across the American Southwest, with two samples per site: Utah (HS003, HSN023), New Mexico (CYAN3, SEV30), and Arizona (SON57, SON60). Sample metadata was retrieved using the <code>rentrez</code> R package to query the SRA and BioSample databases. Raw reads were downloaded using <code>prefetch</code> and <code>fastq-dump</code> from the SRA Toolkit.</p>
-</section>
-<section id="quality-control" class="level2">
-<h2 class="anchored" data-anchor-id="quality-control">Quality Control</h2>
-<p>Raw reads were filtered using <code>chopper</code> with a minimum quality score of 20 and a minimum read length of 1,000 bp. Less than 500 reads per sample were removed.</p>
+<section id="data" class="level2">
+<h2 class="anchored" data-anchor-id="data">Data</h2>
+<p>I was ablr to find Six PacBio HiFi metagenome samples of biocrust from the NCBI Sequence Read Archive (SRA). I norrowed it down to that there were two samples per state: Utah (HS003, HSN023), New Mexico (CYAN3, SEV30), and Arizona (SON57, SON60). Sample metadata was retrieved using the <code>rentrez</code> R package to query the SRA and BioSample databases. Raw reads were downloaded using <code>prefetch</code> and <code>fastq-dump</code> from the SRA Toolkit.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Stream decompress -&gt; filter -&gt; recompress</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">pigz</span> <span class="at">-dc</span> sample.fastq.gz <span class="kw">|</span> <span class="ex">chopper</span> <span class="at">-q</span> 20 <span class="at">-l</span> 1000 <span class="kw">|</span> <span class="ex">pigz</span> <span class="op">&gt;</span> sample_QC.fastq.gz</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section>
-<section id="taxonomic-classification" class="level2">
-<h2 class="anchored" data-anchor-id="taxonomic-classification">Taxonomic Classification</h2>
-<p>Taxonomic classification was performed using Kraken2 with the PlusPF-8 database, which includes bacterial, archaeal, viral, fungal, and protozoan reference sequences. This database was selected to enable analysis across all three domains of interest (bacteria, fungi, and viruses).</p>
+<p>After downloading all the Raw reads, they were filtered using <code>chopper</code> with a minimum quality score of 20 and a minimum read length of 1,000 bp. Less than 500 reads per sample were removed, so we have very high quality data.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Classify reads against PlusPF-8 database</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">kraken2</span> <span class="at">--db</span> ~/databases/k2_pluspf_08gb <span class="dt">\</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">--threads</span> 8 <span class="dt">\</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">--output</span> sample.out <span class="dt">\</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">--report</span> sample.report <span class="dt">\</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    sample_QC.fastq.gz</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Stream decompress -&gt; filter -&gt; recompress</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">pigz</span> <span class="at">-dc</span> sample.fastq.gz <span class="kw">|</span> <span class="ex">chopper</span> <span class="at">-q</span> 20 <span class="at">-l</span> 1000 <span class="kw">|</span> <span class="ex">pigz</span> <span class="op">&gt;</span> sample_QC.fastq.gz</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section>
-</section>
-<section id="results" class="level1">
-<h1>Results</h1>
-<section id="community-composition" class="level2">
-<h2 class="anchored" data-anchor-id="community-composition">Community Composition</h2>
+<p>In order to find out what kind of organisms are living in the biocrust commuiniets, we used a program called Kraken2. Kraken2 takes the reads that we have and maps them against a database so we can identify them. For this analysis, we used the PlusPF-8 database, which includes bacterial, archaeal, viral, fungal, and protozoan reference sequences.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Read in metadata</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>meta_data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/metadata/biocrust_metadata.csv"</span>)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Read all Kraken2 reports into one data frame</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>master_kraken2_data <span class="ot">&lt;-</span> <span class="fu">list.files</span>(<span class="st">"data/kraken2/reports"</span>, <span class="at">full.names =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_dfr</span>(<span class="cf">function</span>(f) {</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    srr_num <span class="ot">&lt;-</span> <span class="fu">basename</span>(<span class="fu">gsub</span>(<span class="st">".report"</span>, <span class="st">""</span>, f))</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">read_tsv</span>(f, <span class="at">col_names =</span> <span class="fu">c</span>(<span class="st">"pct"</span>, <span class="st">"reads_clade"</span>, <span class="st">"reads_direct"</span>, <span class="st">"rank"</span>, <span class="st">"taxid"</span>, <span class="st">"name"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">name =</span> <span class="fu">str_trim</span>(name), <span class="at">srr =</span> srr_num)</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  })</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Join with metadata and extract sample names</span></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>master_kraken2_data <span class="ot">&lt;-</span> master_kraken2_data <span class="sc">%&gt;%</span></span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(meta_data, <span class="at">by =</span> <span class="st">"srr"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">sample =</span> <span class="fu">str_extract</span>(.data<span class="sc">$</span>title, <span class="st">"(?&lt;=- ).*"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Classify reads against PlusPF-8 database</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">kraken2</span> <span class="at">--db</span> ~/databases/k2_pluspf_08gb <span class="dt">\</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">--threads</span> 8 <span class="dt">\</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">--output</span> sample.out <span class="dt">\</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">--report</span> sample.report <span class="dt">\</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    sample_QC.fastq.gz</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>After getting the results back, we were able to look at them using R and plot what we found</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Read in metadata</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>meta_data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/metadata/biocrust_metadata.csv"</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Read all Kraken2 reports into one data frame</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>master_kraken2_data <span class="ot">&lt;-</span> <span class="fu">list.files</span>(<span class="st">"data/kraken2/reports"</span>, <span class="at">full.names =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_dfr</span>(<span class="cf">function</span>(f) {</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    srr_num <span class="ot">&lt;-</span> <span class="fu">basename</span>(<span class="fu">gsub</span>(<span class="st">".report"</span>, <span class="st">""</span>, f))</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">read_tsv</span>(f, <span class="at">col_names =</span> <span class="fu">c</span>(<span class="st">"pct"</span>, <span class="st">"reads_clade"</span>, <span class="st">"reads_direct"</span>, <span class="st">"rank"</span>, <span class="st">"taxid"</span>, <span class="st">"name"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">name =</span> <span class="fu">str_trim</span>(name), <span class="at">srr =</span> srr_num)</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Join with metadata and extract sample names</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>master_kraken2_data <span class="ot">&lt;-</span> master_kraken2_data <span class="sc">%&gt;%</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(meta_data, <span class="at">by =</span> <span class="st">"srr"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">sample =</span> <span class="fu">str_extract</span>(.data<span class="sc">$</span>title, <span class="st">"(?&lt;=- ).*"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Filter to phylum level, at least 1% abundance</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>phylum_data <span class="ot">&lt;-</span> master_kraken2_data <span class="sc">%&gt;%</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(rank <span class="sc">==</span> <span class="st">"P"</span>, pct <span class="sc">&gt;</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(sample, name, pct, geo_loc_name)</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Community composition barplot</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(phylum_data, <span class="fu">aes</span>(<span class="at">x =</span> sample, <span class="at">y =</span> pct, <span class="at">fill =</span> <span class="fu">fct_reorder</span>(name, pct))) <span class="sc">+</span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>() <span class="sc">+</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> geo_loc_name, <span class="at">scales =</span> <span class="st">"free_x"</span>) <span class="sc">+</span></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_d</span>(<span class="at">option =</span> <span class="st">"A"</span>, <span class="at">begin =</span> <span class="fl">0.1</span>, <span class="at">end =</span> <span class="fl">0.85</span>) <span class="sc">+</span></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Desert Biocrust Community Composition"</span>,</span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Sample ID"</span>,</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Relative Abundance (%)"</span>,</span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="cn">NULL</span></span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">14</span>) <span class="sc">+</span></span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>,</span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>        <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>)) <span class="sc">+</span></span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">fill =</span> <span class="fu">guide_legend</span>(<span class="at">nrow =</span> <span class="dv">2</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Filter to phylum level, at least 1% abundance</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>phylum_data <span class="ot">&lt;-</span> master_kraken2_data <span class="sc">%&gt;%</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(rank <span class="sc">==</span> <span class="st">"P"</span>, pct <span class="sc">&gt;</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(sample, name, pct, geo_loc_name)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Community composition barplot</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(phylum_data, <span class="fu">aes</span>(<span class="at">x =</span> sample, <span class="at">y =</span> pct, <span class="at">fill =</span> <span class="fu">fct_reorder</span>(name, pct))) <span class="sc">+</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>() <span class="sc">+</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> geo_loc_name, <span class="at">scales =</span> <span class="st">"free_x"</span>) <span class="sc">+</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_d</span>(<span class="at">option =</span> <span class="st">"A"</span>, <span class="at">begin =</span> <span class="fl">0.1</span>, <span class="at">end =</span> <span class="fl">0.85</span>) <span class="sc">+</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Desert Biocrust Community Composition"</span>,</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Sample ID"</span>,</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Relative Abundance (%)"</span>,</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="cn">NULL</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">14</span>) <span class="sc">+</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>,</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>        <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>)) <span class="sc">+</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">fill =</span> <span class="fu">guide_legend</span>(<span class="at">nrow =</span> <span class="dv">2</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -213,21 +192,194 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="bacterial-communities" class="level2">
-<h2 class="anchored" data-anchor-id="bacterial-communities">Bacterial Communities</h2>
+<section id="diversity" class="level2">
+<h2 class="anchored" data-anchor-id="diversity">Diversity</h2>
+<p>To understand how diverse each community is and how they compare to each other, we calculated alpha and beta diversity metrics using the <code>vegan</code> package.</p>
+<p><strong>Alpha diversity</strong> measures the diversity <em>within</em> a single sample — how many different species are there and how evenly are they distributed? We used the Shannon diversity index, which accounts for both richness (number of species) and evenness (how balanced their abundances are). A higher Shannon index means a more diverse community.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(vegan)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Get species-level counts with a minimum of 10 reads</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>species_count <span class="ot">&lt;-</span> master_kraken2_data <span class="sc">%&gt;%</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(rank <span class="sc">==</span> <span class="st">"S"</span>, reads_direct <span class="sc">&gt;</span> <span class="dv">10</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(geo_loc_name, sample, name, reads_direct)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Pivot to species-by-sample matrix for vegan</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>vegan_species_data <span class="ot">&lt;-</span> species_count <span class="sc">%&gt;%</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> name, <span class="at">values_from =</span> reads_direct)</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>sample_info <span class="ot">&lt;-</span> vegan_species_data <span class="sc">%&gt;%</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(sample, geo_loc_name) <span class="sc">%&gt;%</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">geo_loc_name =</span> <span class="fu">str_replace</span>(geo_loc_name, <span class="st">"USA: "</span>, <span class="st">""</span>))</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>vegan_matrix <span class="ot">&lt;-</span> vegan_species_data <span class="sc">%&gt;%</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>sample, <span class="sc">-</span>geo_loc_name)</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>vegan_matrix[<span class="fu">is.na</span>(vegan_matrix)] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate Shannon diversity</span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>sample_info<span class="sc">$</span>shannon <span class="ot">&lt;-</span> <span class="fu">diversity</span>(vegan_matrix, <span class="at">index =</span> <span class="st">"shannon"</span>)</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot alpha diversity</span></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(sample_info, <span class="fu">aes</span>(<span class="at">x =</span> sample, <span class="at">y =</span> shannon, <span class="at">fill =</span> geo_loc_name)) <span class="sc">+</span></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>() <span class="sc">+</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> geo_loc_name, <span class="at">scales =</span> <span class="st">"free_x"</span>) <span class="sc">+</span></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_d</span>(<span class="at">option =</span> <span class="st">"A"</span>, <span class="at">begin =</span> <span class="fl">0.1</span>, <span class="at">end =</span> <span class="fl">0.85</span>) <span class="sc">+</span></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Desert Biocrust Community Alpha Diversity"</span>,</span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Sample ID"</span>,</span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Shannon Diversity"</span></span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">14</span>) <span class="sc">+</span></span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>,</span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>        <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="biocrust_metagenomics_files/figure-html/alpha-diversity-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Beta diversity</strong> measures how different communities are <em>between</em> samples. We calculated Bray-Curtis dissimilarity and used PCoA (Principal Coordinates Analysis) to visualize the relationships. Samples that are closer together on the plot have more similar communities.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate Bray-Curtis distance and run PCoA</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>bray_dist <span class="ot">&lt;-</span> <span class="fu">vegdist</span>(vegan_matrix, <span class="at">method =</span> <span class="st">"bray"</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>pcoa <span class="ot">&lt;-</span> <span class="fu">cmdscale</span>(bray_dist, <span class="at">k =</span> <span class="dv">2</span>)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>pcoa_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  pcoa,</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">sample =</span> sample_info<span class="sc">$</span>sample,</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">geo_loc_name =</span> sample_info<span class="sc">$</span>geo_loc_name</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot PCoA</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(pcoa_df, <span class="fu">aes</span>(<span class="at">x =</span> X1, <span class="at">y =</span> X2, <span class="at">color =</span> geo_loc_name)) <span class="sc">+</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">4</span>) <span class="sc">+</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> sample), <span class="at">nudge_y =</span> <span class="fl">0.03</span>) <span class="sc">+</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"PCoA of Biocrust Communities"</span>,</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"PCoA Axis 1"</span>,</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"PCoA Axis 2"</span>,</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_viridis_d</span>(<span class="at">option =</span> <span class="st">"A"</span>, <span class="at">begin =</span> <span class="fl">0.1</span>, <span class="at">end =</span> <span class="fl">0.85</span>) <span class="sc">+</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>,</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>        <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>)) <span class="sc">+</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">color =</span> <span class="fu">guide_legend</span>(<span class="at">title =</span> <span class="cn">NULL</span>, <span class="at">nrow =</span> <span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="biocrust_metagenomics_files/figure-html/beta-diversity-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
 </section>
-<section id="fungal-communities" class="level2">
-<h2 class="anchored" data-anchor-id="fungal-communities">Fungal Communities</h2>
+<section id="assembly" class="level2">
+<h2 class="anchored" data-anchor-id="assembly">Assembly</h2>
+<p>With the QC’d reads in hand, we assembled each sample individually using metaMDBG, a Rust-based long-read metagenome assembler. It’s designed specifically for HiFi reads and is incredibly memory-efficient — all six assemblies peaked at under 4.3 GB of RAM.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Assemble each sample individually with metaMDBG</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> file <span class="kw">in</span> data/reads/QC/<span class="pp">*</span>.fastq.gz<span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="va">base</span><span class="op">=</span><span class="va">$(</span><span class="fu">basename</span> <span class="st">"</span><span class="va">$file</span><span class="st">"</span> _QC.fastq.gz<span class="va">)</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="ex">metaMDBG</span> asm <span class="at">--out-dir</span> <span class="st">"data/assemblies/</span><span class="va">$base</span><span class="st">"</span> <span class="at">--in-hifi</span> <span class="st">"</span><span class="va">$file</span><span class="st">"</span> <span class="at">--threads</span> 6</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The assemblies came out looking great. N50 values ranged from 2.2 to 4.1 Mb, meaning half of the total assembly length is in contigs larger than that. For reference, a typical bacterial genome is 2-8 Mb, so many of our contigs are genome-scale. We also recovered between 8 and 26 circular contigs larger than 1 Mb per sample — these are likely complete bacterial chromosomes assembled end-to-end.</p>
 </section>
-<section id="viral-communities" class="level2">
-<h2 class="anchored" data-anchor-id="viral-communities">Viral Communities</h2>
-</section>
-</section>
-<section id="statistical-analysis" class="level1">
-<h1>Statistical Analysis</h1>
-</section>
-<section id="conclusions" class="level1">
-<h1>Conclusions</h1>
+<section id="gene-annotation" class="level2">
+<h2 class="anchored" data-anchor-id="gene-annotation">Gene Annotation</h2>
+<p>To figure out what the organisms in our biocrusts are actually <em>doing</em>, we predicted genes on the assembled contigs using Prodigal in metagenomic mode, then annotated them with eggNOG-mapper.</p>
+<p>Prodigal scans the contigs for open reading frames and predicts protein-coding genes. The <code>-p meta</code> flag tells it to use pre-built models for metagenomic data, since our contigs come from many different organisms with different codon usage patterns.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Predict genes with Prodigal</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="ex">pigz</span> <span class="at">-dc</span> contigs.fasta.gz <span class="kw">|</span> <span class="ex">prodigal</span> <span class="at">-p</span> meta <span class="at">-i</span> /dev/stdin <span class="dt">\</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">-a</span> proteins.faa <span class="dt">\</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">-o</span> genes.gff <span class="dt">\</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">-f</span> gff</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We then ran eggNOG-mapper on the predicted proteins, which uses DIAMOND to search against the eggNOG protein database and assigns functional annotations including COG categories, KEGG pathways, and protein family domains.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Annotate predicted proteins with eggNOG-mapper</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="ex">emapper.py</span> <span class="at">-i</span> proteins.faa <span class="dt">\</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">--output</span> sample_name <span class="dt">\</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">--output_dir</span> output/dir/ <span class="dt">\</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">--data_dir</span> ~/databases/eggnog_db <span class="dt">\</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">-m</span> diamond <span class="dt">\</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">--cpu</span> 8</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(viridis)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Read in all eggNOG annotation files</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>eggnog_data <span class="ot">&lt;-</span> <span class="fu">list.files</span>(<span class="st">"data/gene_annotation/eggNOG-mapper_output"</span>,</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>                          <span class="at">pattern =</span> <span class="st">"*.emapper.annotations"</span>,</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>                          <span class="at">recursive =</span> <span class="cn">TRUE</span>, <span class="at">full.names =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_dfr</span>(<span class="cf">function</span>(f) {</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    srr <span class="ot">&lt;-</span> <span class="fu">basename</span>(f) <span class="sc">%&gt;%</span> <span class="fu">gsub</span>(<span class="st">".emapper.annotations"</span>, <span class="st">""</span>, .)</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">read_tsv</span>(f, <span class="at">comment =</span> <span class="st">"##"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">srr =</span> srr)</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Join with metadata</span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>eggnog_data <span class="ot">&lt;-</span> eggnog_data <span class="sc">%&gt;%</span></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(meta_data, <span class="at">by =</span> <span class="st">"srr"</span>)</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Filter, split multi-letter COG codes, and add descriptions</span></span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>cog_names <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">J =</span> <span class="st">"Translation"</span>, <span class="at">A =</span> <span class="st">"RNA processing"</span>, <span class="at">K =</span> <span class="st">"Transcription"</span>,</span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">L =</span> <span class="st">"Replication/repair"</span>, <span class="at">B =</span> <span class="st">"Chromatin"</span>,</span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">D =</span> <span class="st">"Cell cycle"</span>, <span class="at">V =</span> <span class="st">"Defense"</span>, <span class="at">T =</span> <span class="st">"Signal transduction"</span>,</span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">M =</span> <span class="st">"Cell wall/membrane"</span>, <span class="at">N =</span> <span class="st">"Cell motility"</span>, <span class="at">U =</span> <span class="st">"Secretion/trafficking"</span>,</span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">O =</span> <span class="st">"Protein turnover"</span>, <span class="at">W =</span> <span class="st">"Extracellular"</span>, <span class="at">Z =</span> <span class="st">"Cytoskeleton"</span>,</span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">C =</span> <span class="st">"Energy production"</span>, <span class="at">G =</span> <span class="st">"Carbohydrate metabolism"</span>,</span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">E =</span> <span class="st">"Amino acid metabolism"</span>, <span class="at">F =</span> <span class="st">"Nucleotide metabolism"</span>,</span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">H =</span> <span class="st">"Coenzyme metabolism"</span>, <span class="at">I =</span> <span class="st">"Lipid metabolism"</span>,</span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">P =</span> <span class="st">"Inorganic ion transport"</span>, <span class="at">Q =</span> <span class="st">"Secondary metabolites"</span></span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a>COG_data <span class="ot">&lt;-</span> eggnog_data <span class="sc">%&gt;%</span></span>
+<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">sample =</span> <span class="fu">str_extract</span>(.data<span class="sc">$</span>title, <span class="st">"(?&lt;=- ).*"</span>),</span>
+<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a>         <span class="at">geo_loc_name =</span> <span class="fu">gsub</span>(<span class="st">"USA: "</span>, <span class="st">""</span>, geo_loc_name)) <span class="sc">%&gt;%</span></span>
+<span id="cb11-33"><a href="#cb11-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="st">`</span><span class="at">#query</span><span class="st">`</span>, COG_category, evalue, sample, geo_loc_name) <span class="sc">%&gt;%</span></span>
+<span id="cb11-34"><a href="#cb11-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(evalue <span class="sc">&lt;</span> <span class="fl">1e-5</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb11-35"><a href="#cb11-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(COG_category <span class="sc">!=</span> <span class="st">"-"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb11-36"><a href="#cb11-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">separate_longer_position</span>(COG_category, <span class="at">width =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb11-37"><a href="#cb11-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>COG_category <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"S"</span>, <span class="st">"R"</span>, <span class="st">"Y"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb11-38"><a href="#cb11-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">COG_description =</span> cog_names[COG_category])</span>
+<span id="cb11-39"><a href="#cb11-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-40"><a href="#cb11-40" aria-hidden="true" tabindex="-1"></a><span class="co"># Normalize to proportions within each sample</span></span>
+<span id="cb11-41"><a href="#cb11-41" aria-hidden="true" tabindex="-1"></a>COG_proportions <span class="ot">&lt;-</span> COG_data <span class="sc">%&gt;%</span></span>
+<span id="cb11-42"><a href="#cb11-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(sample) <span class="sc">%&gt;%</span></span>
+<span id="cb11-43"><a href="#cb11-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">total =</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb11-44"><a href="#cb11-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb11-45"><a href="#cb11-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(sample, COG_description, geo_loc_name) <span class="sc">%&gt;%</span></span>
+<span id="cb11-46"><a href="#cb11-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">proportion =</span> <span class="fu">n</span>() <span class="sc">/</span> <span class="fu">first</span>(total), <span class="at">.groups =</span> <span class="st">"drop"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(COG_proportions, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(COG_description, proportion), <span class="at">y =</span> proportion, <span class="at">fill =</span> sample)) <span class="sc">+</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="st">"dodge"</span>) <span class="sc">+</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>geo_loc_name, <span class="at">scales =</span> <span class="st">"free_x"</span>) <span class="sc">+</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_d</span>(<span class="at">option =</span> <span class="st">"A"</span>, <span class="at">begin =</span> <span class="fl">0.1</span>, <span class="at">end =</span> <span class="fl">0.85</span>) <span class="sc">+</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Functional Profile of Desert Biocrust Metagenomes"</span>,</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Predicted Gene Function"</span>,</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Proportion"</span>,</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"Sample"</span>) <span class="sc">+</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">16</span>, <span class="at">hjust =</span> .<span class="dv">5</span>),</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>),</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">14</span>),</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title.position =</span> <span class="st">"plot"</span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="biocrust_metagenomics_files/figure-html/cog-plot-1.png" class="img-fluid figure-img" width="1152"></p>
+</figure>
+</div>
+</div>
+</div>
 </section>
 
 </main>
