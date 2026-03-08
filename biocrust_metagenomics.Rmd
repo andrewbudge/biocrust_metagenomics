@@ -23,7 +23,7 @@ This project uses shotgun metagenomic sequencing to examine the bacterial, funga
 
 ## Getting the Data
 
-Six PacBio HiFi metagenome samples were selected from the NCBI Sequence Read Archive (SRA). Samples were chosen to represent three geographic sites across the American Southwest, with two samples per site: Utah (HS003, HSN023), New Mexico (CYAN3, SEV30), and Arizona (SON57, SON60). Sample metadata was retrieved using the `rentrez` R package to query the SRA and BioSample databases. Raw reads were downloaded using `prefetch` and `fastq-dump` from the SRA Toolkit.
+Six PacBio HiFi metagenome samples were selected from the NCBI Sequence Read Archive (SRA). Samples were chosen to represent three sites across the American Southwest, with two samples per site: Utah (HS003, HSN023), New Mexico (CYAN3, SEV30), and Arizona (SON57, SON60). Sample metadata was retrieved using the `rentrez` R package to query the SRA and BioSample databases. Raw reads were downloaded using `prefetch` and `fastq-dump` from the SRA Toolkit.
 
 ## Quality Control
 

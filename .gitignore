@@ -22,3 +22,10 @@ data/kraken2/outputs/
 
 # The temp files for assembly
 data/assemblies/*/tmp/
+
+# Gene annotation output (large)
+*.faa
+*.gff
+*.emapper.annotations
+*.emapper.hits
+*.emapper.seed_orthologs

@@ -1,0 +1,266 @@
+
+MetaMDBG 1.3.1
+Used command:
+metaMDBG --out-dir data/assemblies/SRR35809155 --in-hifi data/reads/QC/SRR35809155_QC.fastq.gz --threads 6
+
+Checking dependencies: GNU time
+ok
+
+Checking dependencies: minimap2
+ok
+
+Output dir:              data/assemblies/SRR35809155
+Minimizer length:        15
+Min k-min-mer abundance: 0
+Density correction:      0.025
+Density assembly:        0.005
+Min read quality:        0
+Min read overlap length: 1000
+Min read identity:       0.96
+Contig Derep threshold:  0.99
+Homopolymer compression: 1
+Read correction:         0
+
+
+Converting reads to minimizers
+
+Total read bp:   21472180976
+N50 read length: 11123
+Average quality: 39.3576
+
+Start k:         4
+End k:           111
+
+Multi-k pass: 4/111
+pass done: 4
+Multi-k pass: 5/111
+pass done: 5
+Multi-k pass: 6/111
+pass done: 6
+Multi-k pass: 7/111
+pass done: 7
+Multi-k pass: 8/111
+pass done: 8
+Multi-k pass: 9/111
+pass done: 9
+Multi-k pass: 10/111
+pass done: 10
+Multi-k pass: 11/111
+pass done: 11
+Multi-k pass: 12/111
+pass done: 12
+Multi-k pass: 13/111
+pass done: 13
+Multi-k pass: 14/111
+pass done: 14
+Multi-k pass: 15/111
+pass done: 15
+Multi-k pass: 16/111
+pass done: 16
+Multi-k pass: 17/111
+pass done: 17
+Multi-k pass: 18/111
+pass done: 18
+Multi-k pass: 19/111
+pass done: 19
+Multi-k pass: 20/111
+pass done: 20
+Multi-k pass: 21/111
+pass done: 21
+Multi-k pass: 22/111
+pass done: 22
+Multi-k pass: 23/111
+pass done: 23
+Multi-k pass: 24/111
+pass done: 24
+Multi-k pass: 25/111
+pass done: 25
+Multi-k pass: 26/111
+pass done: 26
+Multi-k pass: 27/111
+pass done: 27
+Multi-k pass: 28/111
+pass done: 28
+Multi-k pass: 29/111
+pass done: 29
+Multi-k pass: 30/111
+pass done: 30
+Multi-k pass: 31/111
+pass done: 31
+Multi-k pass: 32/111
+pass done: 32
+Multi-k pass: 33/111
+pass done: 33
+Multi-k pass: 34/111
+pass done: 34
+Multi-k pass: 35/111
+pass done: 35
+Multi-k pass: 36/111
+pass done: 36
+Multi-k pass: 37/111
+pass done: 37
+Multi-k pass: 38/111
+pass done: 38
+Multi-k pass: 39/111
+pass done: 39
+Multi-k pass: 40/111
+pass done: 40
+Multi-k pass: 41/111
+pass done: 41
+Multi-k pass: 42/111
+pass done: 42
+Multi-k pass: 43/111
+pass done: 43
+Multi-k pass: 44/111
+pass done: 44
+Multi-k pass: 45/111
+pass done: 45
+Multi-k pass: 46/111
+pass done: 46
+Multi-k pass: 47/111
+pass done: 47
+Multi-k pass: 48/111
+pass done: 48
+Multi-k pass: 49/111
+pass done: 49
+Multi-k pass: 50/111
+pass done: 50
+Multi-k pass: 51/111
+pass done: 51
+Multi-k pass: 52/111
+pass done: 52
+Multi-k pass: 53/111
+pass done: 53
+Multi-k pass: 54/111
+pass done: 54
+Multi-k pass: 55/111
+pass done: 55
+Multi-k pass: 56/111
+pass done: 56
+Multi-k pass: 57/111
+pass done: 57
+Multi-k pass: 58/111
+pass done: 58
+Multi-k pass: 59/111
+pass done: 59
+Multi-k pass: 60/111
+pass done: 60
+Multi-k pass: 61/111
+pass done: 61
+Multi-k pass: 62/111
+pass done: 62
+Multi-k pass: 63/111
+pass done: 63
+Multi-k pass: 64/111
+pass done: 64
+Multi-k pass: 65/111
+pass done: 65
+Multi-k pass: 66/111
+pass done: 66
+Multi-k pass: 67/111
+pass done: 67
+Multi-k pass: 68/111
+pass done: 68
+Multi-k pass: 69/111
+pass done: 69
+Multi-k pass: 70/111
+pass done: 70
+Multi-k pass: 71/111
+pass done: 71
+Multi-k pass: 72/111
+pass done: 72
+Multi-k pass: 73/111
+pass done: 73
+Multi-k pass: 74/111
+pass done: 74
+Multi-k pass: 75/111
+pass done: 75
+Multi-k pass: 76/111
+pass done: 76
+Multi-k pass: 77/111
+pass done: 77
+Multi-k pass: 78/111
+pass done: 78
+Multi-k pass: 79/111
+pass done: 79
+Multi-k pass: 80/111
+pass done: 80
+Multi-k pass: 81/111
+pass done: 81
+Multi-k pass: 82/111
+pass done: 82
+Multi-k pass: 83/111
+pass done: 83
+Multi-k pass: 84/111
+pass done: 84
+Multi-k pass: 85/111
+pass done: 85
+Multi-k pass: 86/111
+pass done: 86
+Multi-k pass: 87/111
+pass done: 87
+Multi-k pass: 88/111
+pass done: 88
+Multi-k pass: 89/111
+pass done: 89
+Multi-k pass: 90/111
+pass done: 90
+Multi-k pass: 91/111
+pass done: 91
+Multi-k pass: 92/111
+pass done: 92
+Multi-k pass: 93/111
+pass done: 93
+Multi-k pass: 94/111
+pass done: 94
+Multi-k pass: 95/111
+pass done: 95
+Multi-k pass: 96/111
+pass done: 96
+Multi-k pass: 97/111
+pass done: 97
+Multi-k pass: 98/111
+pass done: 98
+Multi-k pass: 99/111
+pass done: 99
+Multi-k pass: 100/111
+pass done: 100
+Multi-k pass: 101/111
+pass done: 101
+Multi-k pass: 102/111
+pass done: 102
+Multi-k pass: 103/111
+pass done: 103
+Multi-k pass: 104/111
+pass done: 104
+Multi-k pass: 105/111
+pass done: 105
+Multi-k pass: 106/111
+pass done: 106
+Multi-k pass: 107/111
+pass done: 107
+Multi-k pass: 108/111
+pass done: 108
+Multi-k pass: 109/111
+pass done: 109
+Multi-k pass: 110/111
+pass done: 110
+Multi-k pass: 111/111
+Derep small contigs
+Removing overlaps and duplication
+Constructing base-space contigs
+pass done: 111
+pass done
+	Parsing file: data/assemblies/SRR35809155/contigs.fasta.gz
+	Parsing file done (nb reads: 932)
+
+	Run time:                   0sec
+	Peak memory:                4.21844 GB
+	Assembly length:            90379494
+	Contigs N50:                3539828
+	Nb contigs:                 932
+	Nb Contigs (>1Mb):          13
+	Nb circular contigs (>1Mb): 11
+
+Contig filename: data/assemblies/SRR35809155/contigs.fasta.gz
+Done!

@@ -1,0 +1,180 @@
+
+MetaMDBG 1.3.1
+Used command:
+metaMDBG --out-dir data/assemblies/SRR35808900 --in-hifi data/reads/QC/SRR35808900_QC.fastq.gz --threads 6
+
+Checking dependencies: GNU time
+ok
+
+Checking dependencies: minimap2
+ok
+
+Output dir:              data/assemblies/SRR35808900
+Minimizer length:        15
+Min k-min-mer abundance: 0
+Density correction:      0.025
+Density assembly:        0.005
+Min read quality:        0
+Min read overlap length: 1000
+Min read identity:       0.96
+Contig Derep threshold:  0.99
+Homopolymer compression: 1
+Read correction:         0
+
+
+Converting reads to minimizers
+
+Total read bp:   14536822432
+N50 read length: 6897
+Average quality: 48.8192
+
+Start k:         4
+End k:           68
+
+Multi-k pass: 4/68
+pass done: 4
+Multi-k pass: 5/68
+pass done: 5
+Multi-k pass: 6/68
+pass done: 6
+Multi-k pass: 7/68
+pass done: 7
+Multi-k pass: 8/68
+pass done: 8
+Multi-k pass: 9/68
+pass done: 9
+Multi-k pass: 10/68
+pass done: 10
+Multi-k pass: 11/68
+pass done: 11
+Multi-k pass: 12/68
+pass done: 12
+Multi-k pass: 13/68
+pass done: 13
+Multi-k pass: 14/68
+pass done: 14
+Multi-k pass: 15/68
+pass done: 15
+Multi-k pass: 16/68
+pass done: 16
+Multi-k pass: 17/68
+pass done: 17
+Multi-k pass: 18/68
+pass done: 18
+Multi-k pass: 19/68
+pass done: 19
+Multi-k pass: 20/68
+pass done: 20
+Multi-k pass: 21/68
+pass done: 21
+Multi-k pass: 22/68
+pass done: 22
+Multi-k pass: 23/68
+pass done: 23
+Multi-k pass: 24/68
+pass done: 24
+Multi-k pass: 25/68
+pass done: 25
+Multi-k pass: 26/68
+pass done: 26
+Multi-k pass: 27/68
+pass done: 27
+Multi-k pass: 28/68
+pass done: 28
+Multi-k pass: 29/68
+pass done: 29
+Multi-k pass: 30/68
+pass done: 30
+Multi-k pass: 31/68
+pass done: 31
+Multi-k pass: 32/68
+pass done: 32
+Multi-k pass: 33/68
+pass done: 33
+Multi-k pass: 34/68
+pass done: 34
+Multi-k pass: 35/68
+pass done: 35
+Multi-k pass: 36/68
+pass done: 36
+Multi-k pass: 37/68
+pass done: 37
+Multi-k pass: 38/68
+pass done: 38
+Multi-k pass: 39/68
+pass done: 39
+Multi-k pass: 40/68
+pass done: 40
+Multi-k pass: 41/68
+pass done: 41
+Multi-k pass: 42/68
+pass done: 42
+Multi-k pass: 43/68
+pass done: 43
+Multi-k pass: 44/68
+pass done: 44
+Multi-k pass: 45/68
+pass done: 45
+Multi-k pass: 46/68
+pass done: 46
+Multi-k pass: 47/68
+pass done: 47
+Multi-k pass: 48/68
+pass done: 48
+Multi-k pass: 49/68
+pass done: 49
+Multi-k pass: 50/68
+pass done: 50
+Multi-k pass: 51/68
+pass done: 51
+Multi-k pass: 52/68
+pass done: 52
+Multi-k pass: 53/68
+pass done: 53
+Multi-k pass: 54/68
+pass done: 54
+Multi-k pass: 55/68
+pass done: 55
+Multi-k pass: 56/68
+pass done: 56
+Multi-k pass: 57/68
+pass done: 57
+Multi-k pass: 58/68
+pass done: 58
+Multi-k pass: 59/68
+pass done: 59
+Multi-k pass: 60/68
+pass done: 60
+Multi-k pass: 61/68
+pass done: 61
+Multi-k pass: 62/68
+pass done: 62
+Multi-k pass: 63/68
+pass done: 63
+Multi-k pass: 64/68
+pass done: 64
+Multi-k pass: 65/68
+pass done: 65
+Multi-k pass: 66/68
+pass done: 66
+Multi-k pass: 67/68
+pass done: 67
+Multi-k pass: 68/68
+Derep small contigs
+Removing overlaps and duplication
+Constructing base-space contigs
+pass done: 68
+pass done
+	Parsing file: data/assemblies/SRR35808900/contigs.fasta.gz
+	Parsing file done (nb reads: 1890)
+
+	Run time:                   0sec
+	Peak memory:                3.59015 GB
+	Assembly length:            121361852
+	Contigs N50:                2961258
+	Nb contigs:                 1890
+	Nb Contigs (>1Mb):          20
+	Nb circular contigs (>1Mb): 8
+
+Contig filename: data/assemblies/SRR35808900/contigs.fasta.gz
+Done!
