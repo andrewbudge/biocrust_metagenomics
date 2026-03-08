@@ -292,9 +292,12 @@ flowchart TD
     M --> N[LoVis4u / gggenes - Visualization]
     K --> O[CheckV - Quality Assessment]
     O --> P[Pharokka - Phage Annotation]
-    L --> Q[Plasmid Analysis]
+    L --> Q[Prodigal + eggNOG - Plasmid Functions]
+    Q --> Q2[Plasmid vs Chromosome Function Comparison]
     F --> R[COG Functional Profiles]
     G --> S[Taxonomy-Function Linkage]
     F --> S
+    P --> T[Visualize with gggenes / LoVis4u]
+    Q --> T
 ```
 
