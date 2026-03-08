@@ -22,7 +22,9 @@ eggnog_data <- eggnog_data %>%
 
 # filter data
 COG_data <- eggnog_data %>%
-  select(`#query`, COG_category, evalue, srr, geo_loc_name) %>%
+  mutate(sample = str_extract(.data$title, "[^-]+$") %>% trimws(),
+         geo_loc_name = gsub("USA: ", "", geo_loc_name)) %>%
+  select(`#query`, COG_category, evalue, srr, sample, geo_loc_name) %>%
   filter(evalue < 1e-5) %>%
   filter(COG_category != "-") %>%
   separate_longer_position(COG_category, width = 1) %>% # split cog ID's into single letters
@@ -48,22 +50,23 @@ COG_data <- COG_data %>%
 
 # normalize to proportions within each sample
 COG_proportions <- COG_data %>%
-  group_by(srr) %>%
+  group_by(sample) %>%
   mutate(total = n()) %>%
   ungroup() %>%
-  group_by(srr, COG_description, geo_loc_name) %>%
+  group_by(sample, COG_description, geo_loc_name) %>%
   summarize(proportion = n() / first(total), .groups = "drop")
 
-# plot COG data by site
-ggplot(COG_proportions, aes(x = reorder(COG_description, proportion), y = proportion, fill = geo_loc_name)) +
+# plot COG data by sample, faceted by state
+ggplot(COG_proportions, aes(x = reorder(COG_description, proportion), y = proportion, fill = sample)) +
   geom_col(position = "dodge") +
   coord_flip() +
+  facet_wrap(~geo_loc_name, scales = "free_x") +
   scale_fill_viridis_d(option = "A", begin = 0.1, end = 0.85) +
   labs(
     title = "Functional Profile of Desert Biocrust Metagenomes",
     x = "Predicted Gene Function",
     y = "Proportion",
-    fill = "Location") +
+    fill = "Sample") +
   theme(
     plot.title = element_text(size = 16, hjust = .5),
     axis.text = element_text(size = 12),
