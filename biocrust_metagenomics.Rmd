@@ -7,6 +7,7 @@ format:
   html:
     theme: sandstone
     toc: true
+    embed-resources: true
 ---
 
 ```{r setup, include=FALSE}
