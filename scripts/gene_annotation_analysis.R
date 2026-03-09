@@ -1,4 +1,4 @@
-#setwd("projects/biocrust_metagenomics/")
+setwd("~/projects/biocrust_metagenomics/")
 
 library(tidyverse)
 library(viridis)

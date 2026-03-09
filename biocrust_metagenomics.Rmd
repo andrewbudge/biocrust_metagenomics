@@ -22,6 +22,33 @@ Biocrusts play a key ecological role in desert ecosystems. The organisms within 
 
 This project uses shotgun metagenomic sequencing to examine the bacterial, fungal, and viral communities of desert biocrusts across three sites in the American Southwest: Utah, New Mexico, and Arizona.
 
+```{r sample-map, fig.width=8, fig.height=6}
+library(maps)
+library(ggrepel)
+
+meta_data <- read.csv("data/metadata/biocrust_metadata.csv")
+
+map_info <- meta_data %>%
+  separate(lat_lon, into = c("lat", "lon"), sep = " N ") %>%
+  mutate(
+    lat = as.numeric(lat),
+    lon = -parse_number(lon),
+    sample = str_extract(title, "(?<=- ).*")
+  ) %>%
+  select(sample, lat, lon)
+
+us_map <- map_data("state") %>%
+  filter(region %in% c("utah", "arizona", "new mexico"))
+
+ggplot() +
+  geom_polygon(data = us_map, aes(x = long, y = lat, group = group),
+                fill = "white", color = "black") +
+  geom_point(data = map_info, aes(x = lon, y = lat), size = 4) +
+  geom_text_repel(data = map_info, aes(x = lon, y = lat, label = sample),
+                  size = 5, box.padding = .5) +
+  theme_minimal()
+```
+
 ## Data
 
 I was ablr to find Six PacBio HiFi metagenome samples of biocrust from the NCBI Sequence Read Archive (SRA). I norrowed it down to that there were two samples per state: Utah (HS003, HSN023), New Mexico (CYAN3, SEV30), and Arizona (SON57, SON60). Sample metadata was retrieved using the `rentrez` R package to query the SRA and BioSample databases. Raw reads were downloaded using `prefetch` and `fastq-dump` from the SRA Toolkit.
