@@ -384,6 +384,89 @@ ggplot(species_counts, aes(x = reorder(species, n), y = n)) +
 
 The dominant taxa among our complete genomes include *Brevundimonas* (6 genomes), *Chitinophaga*, *Sediminibacterium*, and *Hydrogenophaga* — all commonly associated with arid soil environments. We also recovered complete genomes of biocrust keystone organisms including *Allocoleopsis franciscana* (a cyanobacterium) and *Nostoc* sp., both known nitrogen fixers in desert crusts.
 
+### Genomes by Sample and Coverage
+
+To understand which species were recovered from each sample and how abundant they were, we extracted coverage values from the assembly headers (a proxy for organism abundance) and mapped each species to its phylum.
+
+```{r genome-dotplot, echo=TRUE, fig.width=12, fig.height=10}
+# Extract coverage from fasta headers
+fasta_headers <- read_lines(pipe("grep '^>' data/genome_classification/kraken2/hq_chromosomes.fasta")) %>%
+  tibble(header = .) %>%
+  mutate(
+    contig = str_extract(header, "(?<=>)\\S+"),
+    coverage = as.numeric(str_extract(header, "(?<=coverage=)[\\d.]+"))) %>%
+  select(contig, coverage)
+
+# Add coverage and sample info to genome summary
+genome_summary <- genome_summary %>%
+  left_join(fasta_headers, by = "contig") %>%
+  mutate(sample = str_extract(contig, "^SRR\\d+")) %>%
+  left_join(meta_data, by = c("sample" = "srr")) %>%
+  mutate(sample_name = str_extract(title, "(?<=- ).*"))
+
+# Map genus to phylum
+phylum_map <- c(
+  "Acidovorax" = "Pseudomonadota", "Allocoleopsis" = "Cyanobacteriota",
+  "Altererythrobacter" = "Pseudomonadota", "Anatilimnocola" = "Planctomycetota",
+  "Bosea" = "Pseudomonadota", "Bradyrhizobium" = "Pseudomonadota",
+  "Brevundimonas" = "Pseudomonadota", "Candidatus" = "Pseudomonadota",
+  "Chitinophaga" = "Bacteroidota", "Chryseolinea" = "Bacteroidota",
+  "Devosia" = "Pseudomonadota", "Ferrovibrio" = "Pseudomonadota",
+  "Ferruginibacter" = "Bacteroidota", "Flavisolibacter" = "Bacteroidota",
+  "Flavobacterium" = "Bacteroidota", "Humisphaera" = "Planctomycetota",
+  "Hydrogenophaga" = "Pseudomonadota", "Lysobacter" = "Pseudomonadota",
+  "Mesorhizobium" = "Pseudomonadota", "Methyloversatilis" = "Pseudomonadota",
+  "Miltoncostaea" = "Actinomycetota", "Nostoc" = "Cyanobacteriota",
+  "Phreatobacter" = "Pseudomonadota", "Pseudoxanthomonas" = "Pseudomonadota",
+  "Rhizobium" = "Pseudomonadota", "Rhodocytophaga" = "Bacteroidota",
+  "Roseateles" = "Pseudomonadota", "Roseomonas" = "Pseudomonadota",
+  "Sediminibacterium" = "Bacteroidota", "Sphingomonas" = "Pseudomonadota",
+  "Sphingopyxis" = "Pseudomonadota", "Tellurirhabdus" = "Bacteroidota",
+  "Terricaulis" = "Pseudomonadota", "Terrirubrum" = "Pseudomonadota",
+  "unclassified" = "Pseudomonadota"
+)
+
+genomes_within_sample <- genome_summary %>%
+  select(sample, sample_name, species, geo_loc_name, coverage) %>%
+  mutate(
+    geo_loc_name = str_replace(geo_loc_name, "USA: ", ""),
+    genus = str_extract(species, "^\\S+"),
+    phylum = phylum_map[genus]
+  )
+
+# Sort species by phylum then alphabetically
+species_order <- genomes_within_sample %>%
+  distinct(species, phylum) %>%
+  arrange(phylum, species) %>%
+  pull(species)
+
+genomes_within_sample <- genomes_within_sample %>%
+  mutate(species = factor(species, levels = rev(species_order)))
+
+ggplot(genomes_within_sample, aes(x = sample_name, y = species, color = phylum, size = coverage)) +
+  geom_point() +
+  scale_color_viridis_d(option = "A", begin = 0.1, end = 0.85) +
+  facet_wrap(~ geo_loc_name, scales = "free_x") +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    axis.text.y = element_text(size = 10, color = "grey20"),
+    strip.text = element_text(size = 12, face = "bold"),
+    strip.background = element_rect(fill = "grey90", color = NA),
+    panel.spacing = unit(1, "lines"),
+    panel.grid.major.y = element_line(linewidth = 0.3),
+    plot.title = element_text(hjust = 0.5),
+    legend.text = element_text(size = 11),
+    legend.title = element_text(size = 12)
+  ) +
+  labs(
+    title = "Complete Genomes Recovered by Sample",
+    x = "Sample",
+    y = NULL,
+    color = "Phylum"
+  )
+```
+
 ## Analysis Pipeline
 
 ```{mermaid}
@@ -394,7 +477,6 @@ flowchart TD
     C --> C1[Alpha & Beta Diversity]
     D --> E[Prodigal - Gene Prediction]
     E --> F[eggNOG-mapper - Functional Annotation]
-    D --> G[Kraken2 on Contigs - Contig Taxonomy]
     D --> H[seqkit - Extract Circular Contigs]
     H --> I[geNomad - Classification]
     I --> J[Chromosomes]
@@ -403,13 +485,13 @@ flowchart TD
     J --> J1[CheckM2 - Quality Assessment]
     J1 --> J2[Kraken2 - Contig Taxonomy]
     J2 --> M[Bakta - Genome Annotation]
+    J2 --> S[Taxonomy-Function Linkage]
+    F --> S
     M --> N[LoVis4u / gggenes - Visualization]
     K --> O[CheckV - Quality Assessment]
     O --> P[Pharokka - Phage Annotation]
     L --> Q[Prodigal + eggNOG - Plasmid Functions]
     F --> R[COG Functional Profiles]
-    G --> S[Taxonomy-Function Linkage]
-    F --> S
     P --> T[Visualize with gggenes / LoVis4u]
     Q --> T
     Q --> Q2[Plasmid vs Chromosome Function Comparison]
