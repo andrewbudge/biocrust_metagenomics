@@ -13,7 +13,7 @@ eggnog_data <- list.files("data/gene_annotation/eggNOG-mapper_output",
   map_dfr(function(f) {
     srr <- basename(f) %>% gsub(".emapper.annotations", "", .)
     read_tsv(f, comment = "##") %>%
-      mutate(srr = srr)
+      mutate(srr = srr)2
   })
 
 # join with metadata for site info

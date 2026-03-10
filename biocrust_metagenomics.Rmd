@@ -300,6 +300,90 @@ ggplot(COG_proportions, aes(x = reorder(COG_description, proportion), y = propor
   )
 ```
 
+## Genome Classification
+
+With complete assemblies in hand, we extracted all circular contigs (potential complete genomes) that were at least 5 kb long with at least 3x coverage. This gave us 296 circular contigs across the six samples.
+
+We then used **geNomad** to classify each contig as a chromosome, plasmid, or virus. geNomad uses neural networks and marker gene enrichment to assign scores for each category. It also identifies proviruses — viral sequences integrated into bacterial chromosomes.
+
+```{bash, eval=FALSE, echo=TRUE}
+# Extract circular contigs >= 5kb and >= 3x coverage
+pigz -dc contigs.fasta.gz \
+    | rg "circular=yes" \
+    | awk '{if(length >= 5000 && coverage >= 3) print}' \
+    > circular_contigs.fasta
+
+# Run geNomad to classify contigs
+genomad end-to-end circular_contigs.fasta genomad_output ~/databases/genomad_db
+```
+
+geNomad classified our 296 circular contigs into three categories based on a score threshold of 0.9:
+
+- **82 chromosomes** — likely complete bacterial genomes
+- **172 plasmids** — extrachromosomal elements
+- **98 proviruses** — integrated phages within larger contigs
+- **3 whole viral contigs**
+
+### Genome Quality Assessment
+
+To verify that our chromosome contigs are actually complete bacterial genomes and not fragments or chimeras, we ran **CheckM2**. CheckM2 uses machine learning to predict genome completeness and contamination based on the presence of universal single-copy marker genes.
+
+```{bash, eval=FALSE, echo=TRUE}
+# Run CheckM2 on putative chromosomes
+checkm2 predict --threads 6 -x .fasta \
+    --database_path ~/databases/checkm2_db/CheckM2_database/uniref100.KO.1.dmnd \
+    -i data/genome_classification/checkm2/input/ \
+    -o data/genome_classification/checkm2/output/
+```
+
+**76 out of 82** passed high-quality thresholds (>90% completeness, <5% contamination), with most at 99-100% completeness and near-zero contamination. The 6 that didn't pass were small contigs (<500 kb) that lacked enough marker genes.
+
+### Taxonomy of Complete Genomes
+
+We ran **Kraken2** on the high-quality genomes to assign taxonomy. Since these are complete circular chromosomes rather than short reads, the classifications are highly confident — 100% of contigs were classified.
+
+```{bash, eval=FALSE, echo=TRUE}
+# Run Kraken2 on complete genomes
+kraken2 --db ~/databases/k2_pluspf_08gb \
+    --output hq_chromosomes.out \
+    --report hq_chromosomes.report \
+    hq_chromosomes.fasta
+```
+
+```{r contig-taxonomy, echo=TRUE, fig.width=10, fig.height=8}
+library(viridis)
+
+# Read contig taxonomy and CheckM2 quality
+contig_taxonomy <- read_tsv(
+  "data/genome_classification/kraken2/contig_taxonomy.tsv",
+  col_names = c("contig", "species", "taxid")
+)
+
+checkm2 <- read_tsv("data/genome_classification/checkm2/output/quality_report.tsv")
+
+# Join and filter to high quality
+genome_summary <- contig_taxonomy %>%
+  left_join(checkm2, by = c("contig" = "Name")) %>%
+  filter(Completeness > 90, Contamination < 5)
+
+# Plot species counts
+species_counts <- genome_summary %>%
+  count(species, sort = TRUE)
+
+ggplot(species_counts, aes(x = reorder(species, n), y = n)) +
+  geom_col(fill = viridis(1, option = "A", begin = 0.3)) +
+  coord_flip() +
+  labs(
+    title = "Complete Circular Genomes Recovered",
+    x = NULL,
+    y = "Number of Genomes"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+The dominant taxa among our complete genomes include *Brevundimonas* (6 genomes), *Chitinophaga*, *Sediminibacterium*, and *Hydrogenophaga* — all commonly associated with arid soil environments. We also recovered complete genomes of biocrust keystone organisms including *Allocoleopsis franciscana* (a cyanobacterium) and *Nostoc* sp., both known nitrogen fixers in desert crusts.
+
 ## Analysis Pipeline
 
 ```{mermaid}
@@ -316,7 +400,9 @@ flowchart TD
     I --> J[Chromosomes]
     I --> K[Viruses]
     I --> L[Plasmids]
-    J --> M[Bakta - Genome Annotation]
+    J --> J1[CheckM2 - Quality Assessment]
+    J1 --> J2[Kraken2 - Contig Taxonomy]
+    J2 --> M[Bakta - Genome Annotation]
     M --> N[LoVis4u / gggenes - Visualization]
     K --> O[CheckV - Quality Assessment]
     O --> P[Pharokka - Phage Annotation]
