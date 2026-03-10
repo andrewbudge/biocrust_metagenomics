@@ -38,5 +38,3 @@ data/genome_classification/checkm2/output/protein_files/
 data/genome_classification/checkm2/output/diamond_output/
 data/genome_classification/genomad_output/
 
-# Quarto render artifacts
-biocrust_metagenomics_files/

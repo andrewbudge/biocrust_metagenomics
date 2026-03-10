@@ -7,7 +7,7 @@ format:
   html:
     theme: sandstone
     toc: true
-    embed-resources: true
+    embed-resources: false
     code-fold: true
     code-summary: "Show code"
 ---
@@ -483,9 +483,7 @@ knitr::include_graphics("data/genome_classification/genomes/Brevundimonas_sp_M20
 
 geNomad identified 4 integrated proviruses within the Brevundimonas sp. M20 chromosome. These were extracted and annotated with [Pharokka](https://github.com/gbouras13/pharokka), then visualized with [LoVis4u](https://github.com/art-egorov/lovis4u). All 4 proviruses showed no matches in the INPHARED database, suggesting they are novel phages. Homologous genes shared between the proviruses are shown with connecting links.
 
-```{r lovis4u-proviruses, echo=FALSE, fig.cap="Linear gene maps of 4 Brevundimonas proviruses annotated by Pharokka, with homology links between shared genes."}
-knitr::include_graphics("data/genome_classification/genomes/Brevundimonas_sp_M20/lovis4u_output/lovis4u_hires-1.png")
-```
+<iframe src="data/genome_classification/genomes/Brevundimonas_sp_M20/lovis4u_output/lovis4u.pdf" width="100%" height="800px" style="border:none;"></iframe>
 
 ## Analysis Pipeline
 
