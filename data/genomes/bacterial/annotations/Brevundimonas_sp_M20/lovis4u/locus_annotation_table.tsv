@@ -1,0 +1,5 @@
+sequence_id	length	coordinates	circular	description	order	group	initial_order
+SRR35809155_ctg370|provirus_2896115_2935207	39093	1:39093:1	1		0	4	1
+SRR35809155_ctg370|provirus_1812884_1822384	9501	1:9501:1	1		1	3	0
+SRR35809155_ctg370|provirus_105204_146413	41210	1:41210:1	1		2	2	3
+SRR35809155_ctg370|provirus_1105152_1159557	54406	1:54406:1	1		3	1	2

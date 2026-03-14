@@ -12,7 +12,7 @@
 *.fq.gz
 *.sra
 
-# Kraken2 output files (large)
+# Kraken2 output files (old path, keep for safety)
 data/kraken2/outputs/
 
 # R environment
@@ -32,11 +32,43 @@ data/assemblies/*/tmp/
 *.emapper.hits
 *.emapper.seed_orthologs
 
+# LoVis4u intermediate files
+**/mmseqs/
+
+# Bakta/Pharokka additional outputs
+*.embl
+*.gbff
+*.gff3
+*.gbk
+*.ffn
+*.tbl
+
+# Tool logs
+**/logs/
+*.log
+
+# Pharokka/CheckV intermediate files
+**/*aragorn*.txt
+**/*trnascan*
+**/*minced_spacers*
+**/top_hits_card.tsv
+**/top_hits_vfdb.tsv
+**/*mash_inphared*
+*.sec
+*.json
+
+# Kraken2 raw output (keep reports)
+data/reads/taxonomy/outputs/
+*.out
+
 # Large intermediate files
-data/genome_classification/checkm2/input/
-data/genome_classification/checkm2/output/protein_files/
-data/genome_classification/checkm2/output/diamond_output/
-data/genome_classification/genomad_output/
+data/genomes/bacterial/checkm2/input/
+data/genomes/bacterial/checkm2/output/protein_files/
+data/genomes/bacterial/checkm2/output/diamond_output/
+data/genomes/genomad_output/
 
 # Quarto render artifacts
+biocrust_metagenomics_files/
+
+# HTML output (keep the rendered report for GitHub Pages)
 biocrust_metagenomics_files/

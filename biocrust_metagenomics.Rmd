@@ -1,5 +1,5 @@
 ---
-title: "Metagenomics of Desert Biocrusts"
+title: "Metagenomics of Cryptobiotic Soil"
 subtitle: "Community Composition Across the American Southwest"
 author: "Andrew Budge"
 date: ""
@@ -7,27 +7,55 @@ format:
   html:
     theme: sandstone
     toc: true
+    toc-location: left
+    toc-depth: 2
     embed-resources: true
+    code-fold: show
+    code-summary: "Show code"
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
-library(tidyverse)
+source("scripts/R/shared.R")
 ```
 
-## Introduction
+## Overview and Project goals:
 
-Biological soil crusts (biocrusts) are communities of living organisms that form matrix on the soil surface, binding soil particles together in a mat-like structure. They are found primarily in arid and semi-arid environments and are estimated to cover roughly 12% of Earth's land surface ([Rodriguez-Caballero et al., 2022](https://pmc.ncbi.nlm.nih.gov/articles/PMC9291340/)).
+This is my final project for the Data Analysis for Biologists class (BIOL3100) at Utah Valley University. I am very lucky to be doing undergraduate research, so I had experience in bioinformatics and particularly in Phylogenomics. It would have been easy to take some of the research I was ready doing, reformat it, and present it as this final project. However, I decided to take the opportunity to push my skills. I decided to do a metagenomics project, something I have had no experience with. Along with that, I set some other goals
 
-Biocrusts play a key ecological role in desert ecosystems. The organisms within them carry out key biological functions, including nitrogen and carbon fixation. They also influence the physical properties of the soil, affecting albedo, surface stabilization, and the retention of water and nutrients. These crusts, while playing such an important role, are also fragile can be easily damaged by grazing, fire, and human activity and take a long time to heal.
+-   Learn Metageonmic analysis methods and tools.
 
-This project uses shotgun metagenomic sequencing to examine the bacterial, fungal, and viral communities of desert biocrusts across three sites in the American Southwest: Utah, New Mexico, and Arizona.
+-   Utalize R in more ways then for just visualization.
 
-```{r sample-map, fig.width=8, fig.height=6}
-library(maps)
+-   Use and learn new CLI tools for computational intensive sections.
+
+-   Further refine how and when I use AI tools in my coding and research.
+
+## Introduction: What lives within the sand
+
+Metagenomics is word that doesn't come up in every day discussion. Metageomics can be defined as "is the study of the structure and function of entire nucleotide sequences isolated and analyzed from all the organisms (typically microbes) in a bulk sample. Metagenomics is often used to study a specific community of microorganisms, such as those residing on human skin, in the soil or in a water sample." ([NCBI](https://www.genome.gov/genetics-glossary/Metagenomics)). I knew I wanted to do a metagenomic study, but a study of what? I don't often wonder about what microbes are in soil, water of my gut, so what environment would I look at? The answer came to me not at the lab or at my computer, but in the deserts of southern Utah.
+
+In arid environments, there is something called Cryptobiotic soil. Its a biocrust: a living net of microbes in the sand. I have been recreating in southern Utah and seen and interacted with Cryptobiotic soil all of my life. I knew what Cryptobiotic soil is, but what was it in? I knew then, starting at a crust, what I wanted to do a Metagenomic analysis of
+
+![Cryptobiotic soil in southern Utah](data/metadata/Mature-Soil-Crust.webp)
+
+Upon getting home from the desert, I went to work and began my research. I had heard many ranger tours (shout out to ranger rob, I'll never forget you) and signs about what Cryptobiotic soil was, but it was good to refresh.
+
+Cryptobiotic soil is a biological soil crusts (biocrusts). These biocrusts are communities of living organisms that form matrix on the soil surface, binding soil particles together in a mat-like structure. They are found mostly in arid and semi-arid environments and are estimated to cover roughly 12% of Earth's land surface ([Rodriguez-Caballero et al., 2022](https://pmc.ncbi.nlm.nih.gov/articles/PMC9291340/)).
+
+Cryptobiotic soil play a key ecological role in desert ecosystems. Microbes within them carry out key biological functions, including nitrogen and carbon fixation. They also influence the physical properties of the soil, affecting albedo (how reflective the surface is), surface stabilization, and water and nutrient retention. These crusts are also fragile can be easily damaged by grazing, fire, and human activity and take a long time to heal. I personally have seen patches of crust that have footprints in them, right next to trail. It can take a few years to several decades or longer to recover. Its recently been found that recovery of some of the algal and lichen components may take much longer, and could take **several hundred years** in very dry environments. Cryptobiotic soil is so important to the deserts that I love, I was now fired up to learn more about how what lives within.
+
+## Getting Data and Getting very, very lucky
+
+I had a target, but there was just one issue. I didn't have any Data. I also couldn't go out and collect the DNA from Cryptobiotic soil and sequence it, since the budget for this project was 0. All I had was my laptop, the internet, and a lot of ambition. I took a look inside of the NCBI's SRA database, a publicly available resource where people can upload and download raw reads from there projects. I began my search, and after some effort, found gold.
+
+PacBio HiFi shotgun metagenomic reads from Cryptobiotic soil across multiple sites in the southwest.
+
+This was a gold mine. Not only was there data, there was a lot of high-quality data! I skimmed through and decided to use six samples for my project. Two samples from Utah, Arizona, and New Mexico:
+
+```{r, echo=FALSE, fig.width=10, fig.height=6}
 library(ggrepel)
-
-meta_data <- read.csv("data/metadata/biocrust_metadata.csv")
+library(maps)
 
 map_info <- meta_data %>%
   separate(lat_lon, into = c("lat", "lon"), sep = " N ") %>%
@@ -43,67 +71,51 @@ us_map <- map_data("state") %>%
 
 ggplot() +
   geom_polygon(data = us_map, aes(x = long, y = lat, group = group),
-                fill = "white", color = "black") +
-  geom_point(data = map_info, aes(x = lon, y = lat), size = 4) +
+               fill = "white", color = "black") +
+  geom_point(data = map_info, aes(x = lon, y = lat), size = 2) +
   geom_text_repel(data = map_info, aes(x = lon, y = lat, label = sample),
-                  size = 5, box.padding = .5) +
+                  size = 3, box.padding = .5) +
   theme_minimal()
 ```
 
-## Data
+The samples from Utah and Arizona were taken at the same sites respectively, while the New Mexico Samples were taken a different sites int the state. This lets us see how communities can differ at the same site while also seeing who the differ from site to site.
 
-I was ablr to find Six PacBio HiFi metagenome samples of biocrust from the NCBI Sequence Read Archive (SRA). I norrowed it down to that there were two samples per state: Utah (HS003, HSN023), New Mexico (CYAN3, SEV30), and Arizona (SON57, SON60). Sample metadata was retrieved using the `rentrez` R package to query the SRA and BioSample databases. Raw reads were downloaded using `prefetch` and `fastq-dump` from the SRA Toolkit.
+`rentrez`, an R package that makes interacting at scale with the NCBI databases easier, was used to collect all the metadata about the samples. I was then able to download the raw reads for each sample using `prefetch` and `fastq-fetch` in the `sra-tooklit`.
 
-```{bash, eval=FALSE, echo=TRUE}
+## Quality Control
 
-```
+Once the reads were downloaded, I used a CLI tool called Chopper to remove any poor quality reads. The reads had to be at least 1000bp's long and have a quality score of 20. Less than 500 reads were removed from reach sample, so we were working with very good data!
 
+## What's living in the Crust?
 
-After downloading all the Raw reads, they were filtered using `chopper` with a minimum quality score of 20 and a minimum read length of 1,000 bp. Less than 500 reads per sample were removed, so we have very high quality data.
+### Who's There? (Community Composition)
 
-```{bash, eval=FALSE, echo=TRUE}
-# Stream decompress -> filter -> recompress
-pigz -dc sample.fastq.gz | chopper -q 20 -l 1000 | pigz > sample_QC.fastq.gz
-```
+The first thing I wanted to see is what kinds of bacteria are living in the Cryptobiotic soil. To do that, we are able to use a tool called Kraken2. Kraken2 maps the QC'd reads against a database of known bacterial and archeal reference sequences and gives out reads a likely taxonomic assignment.
 
-In order to find out what kind of organisms are living in the biocrust commuiniets, we used a program called Kraken2. Kraken2 takes the reads that we have and maps them against a database so we can identify them. For this analysis, we used the PlusPF-8 database, which includes bacterial, archaeal, viral, fungal, and protozoan reference sequences.
+I decided to look at are results at a phylum level, to understand an overall composition of the microbial community. I took the Kraken2 results of all samples and combined them into a master dataset
 
-```{bash, eval=FALSE, echo=TRUE}
-# Classify reads against PlusPF-8 database
-kraken2 --db ~/databases/k2_pluspf_08gb \
-    --threads 8 \
-    --output sample.out \
-    --report sample.report \
-    sample_QC.fastq.gz
-```
-
-After getting the results back, we were able to look at them using R and plot what we found
-
-```{r load-data, echo=TRUE}
-# Read in metadata
-meta_data <- read.csv("data/metadata/biocrust_metadata.csv")
-
-# Read all Kraken2 reports into one data frame
-master_kraken2_data <- list.files("data/kraken2/reports", full.names = TRUE) %>%
+```{r, echo=TRUE}
+master_kraken2_data <- list.files("data/reads/taxonomy/reports", full.names = TRUE) %>%
   map_dfr(function(f) {
     srr_num <- basename(gsub(".report", "", f))
     read_tsv(f, col_names = c("pct", "reads_clade", "reads_direct", "rank", "taxid", "name")) %>%
-      mutate(name = str_trim(name), srr = srr_num)
-  })
-
-# Join with metadata and extract sample names
-master_kraken2_data <- master_kraken2_data %>%
+      mutate(srr = srr_num)
+  }) %>%
   left_join(meta_data, by = "srr") %>%
-  mutate(sample = str_extract(.data$title, "(?<=- ).*"))
+  mutate(sample = str_extract(title, "(?<=- ).*"))
 ```
 
-```{r phylum-barplot, echo=TRUE, fig.width=10, fig.height=6}
-# Filter to phylum level, at least 1% abundance
+I then filtered the dataset to pull out the phylum rank and to only include organisms that were at least 1% present in the sample.
+
+```{r, echo=TRUE}
 phylum_data <- master_kraken2_data %>%
   filter(rank == "P", pct > 1) %>%
   select(sample, name, pct, geo_loc_name)
+```
 
-# Community composition barplot
+and finally, I created a bar chart to visualize the results.
+
+```{r, echo=TRUE, fig.width=10, fig.height=6}
 ggplot(phylum_data, aes(x = sample, y = pct, fill = fct_reorder(name, pct))) +
   geom_col() +
   facet_wrap(~ geo_loc_name, scales = "free_x") +
@@ -112,29 +124,27 @@ ggplot(phylum_data, aes(x = sample, y = pct, fill = fct_reorder(name, pct))) +
     title = "Desert Biocrust Community Composition",
     x = "Sample ID",
     y = "Relative Abundance (%)",
-    fill = NULL
+    fill = "Phylum"
   ) +
   theme_minimal(base_size = 14) +
-  theme(legend.position = "bottom",
-        plot.title = element_text(hjust = 0.5)) +
-  guides(fill = guide_legend(nrow = 2))
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    legend.position = "bottom"
+  ) +
+  guides(fill = guide_legend(title = NULL, nrow = 2))
 ```
 
-## Diversity
+While each sample has a unique compositon of bacteria living within them, we do some some trends. At least 50% if the community is composed of both Pseudomonadota and Cyanobacteriota. We will look more into what these groups are doing later.
 
-To understand how diverse each community is and how they compare to each other, we calculated alpha and beta diversity metrics using the `vegan` package.
+### How Diverse are they? (Alpha and Beta Diversity)
 
-**Alpha diversity** measures the diversity *within* a single sample — how many different species are there and how evenly are they distributed? We used the Shannon diversity index, which accounts for both richness (number of species) and evenness (how balanced their abundances are). A higher Shannon index means a more diverse community.
+I could see that there was a lot of differences between the samples, but how much exactly? Was there a lot of diversity within the samples themselves? Two statical tools helped me answer that questions: Alpha and Beta diversity. The `vegan` package in R allows to at a look at this. Before we could do that I had to transform the data into something that Vegan could use. WE filtered things down to a species level and every species we included had to have at least 10 reads mapped to it. 
 
-```{r alpha-diversity, echo=TRUE, fig.width=10, fig.height=6}
-library(vegan)
-
-# Get species-level counts with a minimum of 10 reads
+```{r, echo=TRUE}
 species_count <- master_kraken2_data %>%
-  filter(rank == "S", reads_direct > 10) %>%
+  filter(rank == "S", reads_direct > 10) %>% 
   select(geo_loc_name, sample, name, reads_direct)
 
-# Pivot to species-by-sample matrix for vegan
 vegan_species_data <- species_count %>%
   pivot_wider(names_from = name, values_from = reads_direct)
 
@@ -143,13 +153,20 @@ sample_info <- vegan_species_data %>%
   mutate(geo_loc_name = str_replace(geo_loc_name, "USA: ", ""))
 
 vegan_matrix <- vegan_species_data %>%
-  select(-sample, -geo_loc_name)
-vegan_matrix[is.na(vegan_matrix)] <- 0
+  select(-sample, -geo_loc_name) %>%
+  replace(is.na(.), 0)
+```
 
-# Calculate Shannon diversity
+#### Alpha Diversity
+
+Alpha Diversity is a measurement of diversity within a single a sample. It asks two questions: How many different species are present and how evenly are they distributed? I used the shannon index to capture this, as it takes into account both factors. The higher the Shannon Value, the more diverse the Biocrust will be.
+
+```{r, echo=TRUE, , fig.width=10, fig.height=6}
+library(vegan)
+
 sample_info$shannon <- diversity(vegan_matrix, index = "shannon")
 
-# Plot alpha diversity
+# Alpha diversity plot
 ggplot(sample_info, aes(x = sample, y = shannon, fill = geo_loc_name)) +
   geom_col() +
   facet_wrap(~ geo_loc_name, scales = "free_x") +
@@ -157,27 +174,28 @@ ggplot(sample_info, aes(x = sample, y = shannon, fill = geo_loc_name)) +
   labs(
     title = "Desert Biocrust Community Alpha Diversity",
     x = "Sample ID",
-    y = "Shannon Diversity"
+    y = "Shannon Diversity",
+    fill = "Location"
   ) +
   theme_minimal(base_size = 14) +
-  theme(legend.position = "none",
-        plot.title = element_text(hjust = 0.5))
+  theme(
+    legend.position = "none",
+    plot.title = element_text(hjust = 0.5)
+  )
+
 ```
 
-**Beta diversity** measures how different communities are *between* samples. We calculated Bray-Curtis dissimilarity and used PCoA (Principal Coordinates Analysis) to visualize the relationships. Samples that are closer together on the plot have more similar communities.
+According to the Shannon index, The SON57 sample from far south arizona was the least diverse of the sites. Site SEV30 from central New Mexico, was our most diverse, with a Shannon score above 6. Shannon values for soil metagenomics typically fall between 4-7, so SEV30 has a very diverse community. There is a possible trend where samples from more southern, arid sites show lower diversity, though with only six samples this would need further testing to confirm. 
 
-```{r beta-diversity, echo=TRUE, fig.width=8, fig.height=6}
-# Calculate Bray-Curtis distance and run PCoA
-bray_dist <- vegdist(vegan_matrix, method = "bray")
-pcoa <- cmdscale(bray_dist, k = 2)
+#### Beta Diversity
 
-pcoa_df <- data.frame(
-  pcoa,
-  sample = sample_info$sample,
-  geo_loc_name = sample_info$geo_loc_name
-)
+Beta Diversity is a measurement of the diversity between samples. Bray-Curtis dissimilarity was used for this analysis, which compares species composition between every pair of samples. PCoA (Principal Coordinates Analysis) was then used to plot the relationship in 2D space. The closer the points are on the plot, the more similar they are and vice versa.
 
-# Plot PCoA
+```{r, echo=TRUE,  fig.width=10, fig.height=6}
+pcoa_df <- vegdist(vegan_matrix, method = "bray") %>%
+  cmdscale(k = 2) %>%
+  data.frame(sample = sample_info$sample, geo_loc_name = sample_info$geo_loc_name)
+
 ggplot(pcoa_df, aes(x = X1, y = X2, color = geo_loc_name)) +
   geom_point(size = 4) +
   geom_text(aes(label = sample), nudge_y = 0.03) +
@@ -185,246 +203,109 @@ ggplot(pcoa_df, aes(x = X1, y = X2, color = geo_loc_name)) +
     title = "PCoA of Biocrust Communities",
     x = "PCoA Axis 1",
     y = "PCoA Axis 2",
-    color = NULL) +
+    color = NULL
+  ) +
   scale_color_viridis_d(option = "A", begin = 0.1, end = 0.85) +
-  theme(legend.position = "bottom",
-        plot.title = element_text(hjust = 0.5)) +
+  theme(
+    legend.position = "bottom",
+    plot.title = element_text(hjust = 0.5)
+  ) +
   guides(color = guide_legend(title = NULL, nrow = 1))
 ```
 
-## Assembly
+The Utah samples (HS003, HSN023) and Arizona samples (SON57, SON60) each clustered tightly together, which makes sense — each pair was collected from the same site. The two New Mexico samples (CYAN3, SEV30) were more spread apart, reflecting the fact that they were collected from different locations within the state. CYAN3 in particular stands out as the most compositionally distinct sample, sitting far from all the others on the plot.
 
-With the QC'd reads in hand, we assembled each sample individually using metaMDBG, a Rust-based long-read metagenome assembler. It's designed specifically for HiFi reads and is incredibly memory-efficient — all six assemblies peaked at under 4.3 GB of RAM.
+## From Reads to Genes
 
-```{bash, eval=FALSE, echo=TRUE}
-# Assemble each sample individually with metaMDBG
-for file in data/reads/QC/*.fastq.gz; do
-    base=$(basename "$file" _QC.fastq.gz)
-    metaMDBG asm --out-dir "data/assemblies/$base" --in-hifi "$file" --threads 6
-done
-```
+The reads where great at giving us a broad picture of what was living in the biocrust and the composition of the communities, but to understand in more detail whats going on, we need to go from reads to contigs.
 
-The assemblies came out looking great. N50 values ranged from 2.2 to 4.1 Mb, meaning half of the total assembly length is in contigs larger than that. For reference, a typical bacterial genome is 2-8 Mb, so many of our contigs are genome-scale. We also recovered between 8 and 26 circular contigs larger than 1 Mb per sample — these are likely complete bacterial chromosomes assembled end-to-end.
+Using the same QC'd reads that we feed in Kraken2, I gave them over to metaMDBG, an metageomic assemble program this is built for PacBio Hifi reads. It also has the benefit of being using very little memory. After having it run overnight we got out a total of 10,417 contigs from all samples!
 
-## Gene Annotation
+These contigs ranged from small fragments to potential complete bacterial genomes. we used `prodigal`, a program that searches for potential proteins that could be coded by the contigs. We then pass those predicted proteins to `eggNOG-mapper`, which maps them to known protein families and then assigns them a broad functional group like "Energy production" or "Amino acid metabolism". These groups are called COG categories.
+Pulling the data into R, I was able to to to calculate the proportion of the predicted proteins that mapped to which COG category within the samples. 
 
-To figure out what the organisms in our biocrusts are actually *doing*, we predicted genes on the assembled contigs using Prodigal in metagenomic mode, then annotated them with eggNOG-mapper.
-
-Prodigal scans the contigs for open reading frames and predicts protein-coding genes. The `-p meta` flag tells it to use pre-built models for metagenomic data, since our contigs come from many different organisms with different codon usage patterns.
-
-```{bash, eval=FALSE, echo=TRUE}
-# Predict genes with Prodigal
-pigz -dc contigs.fasta.gz | prodigal -p meta -i /dev/stdin \
-    -a proteins.faa \
-    -o genes.gff \
-    -f gff
-```
-
-We then ran eggNOG-mapper on the predicted proteins, which uses DIAMOND to search against the eggNOG protein database and assigns functional annotations including COG categories, KEGG pathways, and protein family domains.
-
-```{bash, eval=FALSE, echo=TRUE}
-# Annotate predicted proteins with eggNOG-mapper
-emapper.py -i proteins.faa \
-    --output sample_name \
-    --output_dir output/dir/ \
-    --data_dir ~/databases/eggnog_db \
-    -m diamond \
-    --cpu 8
-```
-
-```{r cog-setup, echo=TRUE}
-library(viridis)
-
-# Read in all eggNOG annotation files
-eggnog_data <- list.files("data/gene_annotation/eggNOG-mapper_output",
+```{r, echo=TRUE}
+eggnog_data <- list.files("data/assembly_COG/eggNOG-mapper_output",
                           pattern = "*.emapper.annotations",
                           recursive = TRUE, full.names = TRUE) %>%
   map_dfr(function(f) {
     srr <- basename(f) %>% gsub(".emapper.annotations", "", .)
     read_tsv(f, comment = "##") %>%
       mutate(srr = srr)
-  })
-
-# Join with metadata
-eggnog_data <- eggnog_data %>%
+  }) %>%
   left_join(meta_data, by = "srr")
 
-# Filter, split multi-letter COG codes, and add descriptions
-cog_names <- c(
-  J = "Translation", A = "RNA processing", K = "Transcription",
-  L = "Replication/repair", B = "Chromatin",
-  D = "Cell cycle", V = "Defense", T = "Signal transduction",
-  M = "Cell wall/membrane", N = "Cell motility", U = "Secretion/trafficking",
-  O = "Protein turnover", W = "Extracellular", Z = "Cytoskeleton",
-  C = "Energy production", G = "Carbohydrate metabolism",
-  E = "Amino acid metabolism", F = "Nucleotide metabolism",
-  H = "Coenzyme metabolism", I = "Lipid metabolism",
-  P = "Inorganic ion transport", Q = "Secondary metabolites"
-)
-
 COG_data <- eggnog_data %>%
-  mutate(sample = str_extract(.data$title, "(?<=- ).*"),
+  mutate(sample = str_extract(title, "[^-]+$") %>% trimws(),
          geo_loc_name = gsub("USA: ", "", geo_loc_name)) %>%
-  select(`#query`, COG_category, evalue, sample, geo_loc_name) %>%
-  filter(evalue < 1e-5) %>%
-  filter(COG_category != "-") %>%
-  separate_longer_position(COG_category, width = 1) %>%
-  filter(!COG_category %in% c("S", "R", "Y")) %>%
-  mutate(COG_description = cog_names[COG_category])
+  select(`#query`, COG_category, evalue, srr, sample, geo_loc_name) %>%
+  filter_cog()
 
-# Normalize to proportions within each sample
 COG_proportions <- COG_data %>%
+  count(sample, COG_description, geo_loc_name) %>%
   group_by(sample) %>%
-  mutate(total = n()) %>%
+  mutate(proportion = n / sum(n)) %>%
   ungroup() %>%
-  group_by(sample, COG_description, geo_loc_name) %>%
-  summarize(proportion = n() / first(total), .groups = "drop")
+  mutate(sample = factor(sample, levels = c("CYAN3", "SON57", "HS003", "SEV30", "SON60", "HSN023")))
 ```
 
-```{r cog-plot, echo=TRUE, fig.width=12, fig.height=8}
+With the data cleaned and proportions calculated, we could plot it to see what all the mircobes in the biocrust were up too.
+
+```{r, echo=TRUE,  fig.width=10, fig.height=6}
+
 ggplot(COG_proportions, aes(x = reorder(COG_description, proportion), y = proportion, fill = sample)) +
   geom_col(position = "dodge") +
   coord_flip() +
   facet_wrap(~geo_loc_name, scales = "free_x") +
-  scale_fill_viridis_d(option = "A", begin = 0.1, end = 0.85) +
-  labs(
-    title = "Functional Profile of Desert Biocrust Metagenomes",
-    x = "Predicted Gene Function",
-    y = "Proportion",
-    fill = "Sample") +
+  scale_fill_viridis_d(option = "A", begin = 0.1, end = 0.85,
+                       breaks = c("SON57", "SON60", "CYAN3", "SEV30", "HS003", "HSN023")) +
+  labs(title = "Functional Profile of Desert Biocrust Metagenomes",
+       x = "Predicted Gene Function", y = "Proportion", fill = "Sample") +
   theme(
     plot.title = element_text(size = 16, hjust = .5),
     axis.text = element_text(size = 12),
     axis.title = element_text(size = 14),
     plot.title.position = "plot"
   )
+
 ```
 
-## Genome Classification
+The functional profiles of the samples are all very similar to each other, showing that despite geographic distance and diversity, the Cryptobiotic soil all have the same underlying functions at play. These microbes live in some of the most extreme environments and must have the capability to survive. The most commonly appearing COG category is Amino Acid Metabolism. Resource availability in the environment is very limited, and being able to process what is there is crucial. One organism's waste is another's food source. Another category I think is interesting is Carbohydrate metabolism. This is the sugar economy of the biocrust. Cyanobacteria produce extracellular polysaccharides, the sticky sugars that physically bind soil particles together and form the "crust" in biocrust. Other organisms then break those sugars down for energy. So the very structure of the crust is built and maintained by the metabolic activity of the organisms living in it.
 
-With complete assemblies in hand, we extracted all circular contigs (potential complete genomes) that were at least 5 kb long with at least 3x coverage. This gave us 296 circular contigs across the six samples.
 
-We then used **geNomad** to classify each contig as a chromosome, plasmid, or virus. geNomad uses neural networks and marker gene enrichment to assign scores for each category. It also identifies proviruses — viral sequences integrated into bacterial chromosomes.
+## Genes make Genomes
 
-```{bash, eval=FALSE, echo=TRUE}
-# Extract circular contigs >= 5kb and >= 3x coverage
-pigz -dc contigs.fasta.gz \
-    | rg "circular=yes" \
-    | awk '{if(length >= 5000 && coverage >= 3) print}' \
-    > circular_contigs.fasta
+Like the reads, we filtered the contigs. Bacterial genomes are typically circular, so circular contigs are good candidates for complete genomes — but viruses can be circular too, so we needed to sort them out. Luckily, metaMDBG is able to identify circular contigs. Pulling them out and filtering for at least 5kb length and 3x coverage, we were left with 296 circular contigs. In order to find out if what I had were contigs or genomes, I used two tools — `geNomad` and `CheckM2`. geNomad was able to identify whether the circular contigs were bacterial chromosomes or viruses. Out of the 296, it classified 82 as chromosomes, 98 as proviruses, and 3 as whole viral contigs. The 82 chromosomes were then given to CheckM2 to verify they were actually complete and not chimeras of different genomes. 76 out of 82 passed with over 90% completeness and less than 5% contamination.
 
-# Run geNomad to classify contigs
-genomad end-to-end circular_contigs.fasta genomad_output ~/databases/genomad_db
-```
+Now that I had some candidate genomes, I wanted to know what they were. Kraken2 was once again used to identify what the contigs were.
 
-geNomad classified our 296 circular contigs into three categories based on a score threshold of 0.9:
-
-- **82 chromosomes** — likely complete bacterial genomes
-- **172 plasmids** — extrachromosomal elements
-- **98 proviruses** — integrated phages within larger contigs
-- **3 whole viral contigs**
-
-### Genome Quality Assessment
-
-To verify that our chromosome contigs are actually complete bacterial genomes and not fragments or chimeras, we ran **CheckM2**. CheckM2 uses machine learning to predict genome completeness and contamination based on the presence of universal single-copy marker genes.
-
-```{bash, eval=FALSE, echo=TRUE}
-# Run CheckM2 on putative chromosomes
-checkm2 predict --threads 6 -x .fasta \
-    --database_path ~/databases/checkm2_db/CheckM2_database/uniref100.KO.1.dmnd \
-    -i data/genome_classification/checkm2/input/ \
-    -o data/genome_classification/checkm2/output/
-```
-
-**76 out of 82** passed high-quality thresholds (>90% completeness, <5% contamination), with most at 99-100% completeness and near-zero contamination. The 6 that didn't pass were small contigs (<500 kb) that lacked enough marker genes.
-
-### Taxonomy of Complete Genomes
-
-We ran **Kraken2** on the high-quality genomes to assign taxonomy. Since these are complete circular chromosomes rather than short reads, the classifications are highly confident — 100% of contigs were classified.
-
-```{bash, eval=FALSE, echo=TRUE}
-# Run Kraken2 on complete genomes
-kraken2 --db ~/databases/k2_pluspf_08gb \
-    --output hq_chromosomes.out \
-    --report hq_chromosomes.report \
-    hq_chromosomes.fasta
-```
-
-```{r contig-taxonomy, echo=TRUE, fig.width=10, fig.height=8}
-library(viridis)
-
-# Read contig taxonomy and CheckM2 quality
+```{r, echo=TRUE, fig.width=12, fig.height=10}
 contig_taxonomy <- read_tsv(
-  "data/genome_classification/kraken2/contig_taxonomy.tsv",
+  "data/genomes/bacterial/taxonomy/contig_taxonomy.tsv",
   col_names = c("contig", "species", "taxid")
 )
 
-checkm2 <- read_tsv("data/genome_classification/checkm2/output/quality_report.tsv")
+checkm2 <- read_tsv("data/genomes/bacterial/checkm2/output/quality_report.tsv")
 
-# Join and filter to high quality
 genome_summary <- contig_taxonomy %>%
   left_join(checkm2, by = c("contig" = "Name")) %>%
-  filter(Completeness > 90, Contamination < 5)
-
-# Plot species counts
-species_counts <- genome_summary %>%
-  count(species, sort = TRUE)
-
-ggplot(species_counts, aes(x = reorder(species, n), y = n)) +
-  geom_col(fill = viridis(1, option = "A", begin = 0.3)) +
-  coord_flip() +
-  labs(
-    title = "Complete Circular Genomes Recovered",
-    x = NULL,
-    y = "Number of Genomes"
-  ) +
-  theme_minimal(base_size = 14) +
-  theme(plot.title = element_text(hjust = 0.5))
-```
-
-The dominant taxa among our complete genomes include *Brevundimonas* (6 genomes), *Chitinophaga*, *Sediminibacterium*, and *Hydrogenophaga* — all commonly associated with arid soil environments. We also recovered complete genomes of biocrust keystone organisms including *Allocoleopsis franciscana* (a cyanobacterium) and *Nostoc* sp., both known nitrogen fixers in desert crusts.
-
-### Genomes by Sample and Coverage
-
-To understand which species were recovered from each sample and how abundant they were, we extracted coverage values from the assembly headers (a proxy for organism abundance) and mapped each species to its phylum.
-
-```{r genome-dotplot, echo=TRUE, fig.width=12, fig.height=10}
-# Extract coverage from fasta headers
-fasta_headers <- read_lines(pipe("grep '^>' data/genome_classification/kraken2/hq_chromosomes.fasta")) %>%
-  tibble(header = .) %>%
-  mutate(
-    contig = str_extract(header, "(?<=>)\\S+"),
-    coverage = as.numeric(str_extract(header, "(?<=coverage=)[\\d.]+"))) %>%
-  select(contig, coverage)
-
-# Add coverage and sample info to genome summary
-genome_summary <- genome_summary %>%
-  left_join(fasta_headers, by = "contig") %>%
+  filter(Completeness > 90, Contamination < 5) %>%
   mutate(sample = str_extract(contig, "^SRR\\d+")) %>%
   left_join(meta_data, by = c("sample" = "srr")) %>%
   mutate(sample_name = str_extract(title, "(?<=- ).*"))
 
-# Map genus to phylum
-phylum_map <- c(
-  "Acidovorax" = "Pseudomonadota", "Allocoleopsis" = "Cyanobacteriota",
-  "Altererythrobacter" = "Pseudomonadota", "Anatilimnocola" = "Planctomycetota",
-  "Bosea" = "Pseudomonadota", "Bradyrhizobium" = "Pseudomonadota",
-  "Brevundimonas" = "Pseudomonadota", "Candidatus" = "Pseudomonadota",
-  "Chitinophaga" = "Bacteroidota", "Chryseolinea" = "Bacteroidota",
-  "Devosia" = "Pseudomonadota", "Ferrovibrio" = "Pseudomonadota",
-  "Ferruginibacter" = "Bacteroidota", "Flavisolibacter" = "Bacteroidota",
-  "Flavobacterium" = "Bacteroidota", "Humisphaera" = "Planctomycetota",
-  "Hydrogenophaga" = "Pseudomonadota", "Lysobacter" = "Pseudomonadota",
-  "Mesorhizobium" = "Pseudomonadota", "Methyloversatilis" = "Pseudomonadota",
-  "Miltoncostaea" = "Actinomycetota", "Nostoc" = "Cyanobacteriota",
-  "Phreatobacter" = "Pseudomonadota", "Pseudoxanthomonas" = "Pseudomonadota",
-  "Rhizobium" = "Pseudomonadota", "Rhodocytophaga" = "Bacteroidota",
-  "Roseateles" = "Pseudomonadota", "Roseomonas" = "Pseudomonadota",
-  "Sediminibacterium" = "Bacteroidota", "Sphingomonas" = "Pseudomonadota",
-  "Sphingopyxis" = "Pseudomonadota", "Tellurirhabdus" = "Bacteroidota",
-  "Terricaulis" = "Pseudomonadota", "Terrirubrum" = "Pseudomonadota",
-  "unclassified" = "Pseudomonadota"
-)
+# Extract coverage from fasta headers
+fasta_headers <- read_lines(pipe("grep '^>' data/genomes/bacterial/taxonomy/hq_chromosomes.fasta")) %>%
+  keep(~ str_starts(.x, ">")) %>%
+  tibble(header = .) %>%
+  mutate(
+    contig = str_extract(header, "(?<=>)\\S+"),
+    coverage = as.numeric(str_extract(header, "(?<=coverage=)[\\d.]+"))
+  ) %>%
+  select(contig, coverage)
+
+genome_summary <- genome_summary %>%
+  left_join(fasta_headers, by = "contig")
 
 genomes_within_sample <- genome_summary %>%
   select(sample, sample_name, species, geo_loc_name, coverage) %>%
@@ -434,7 +315,6 @@ genomes_within_sample <- genome_summary %>%
     phylum = phylum_map[genus]
   )
 
-# Sort species by phylum then alphabetically
 species_order <- genomes_within_sample %>%
   distinct(species, phylum) %>%
   arrange(phylum, species) %>%
@@ -447,7 +327,7 @@ ggplot(genomes_within_sample, aes(x = sample_name, y = species, color = phylum, 
   geom_point() +
   scale_color_viridis_d(option = "A", begin = 0.1, end = 0.85) +
   facet_wrap(~ geo_loc_name, scales = "free_x") +
-  theme_minimal() +
+  theme_minimal(base_size = 14) +
   theme(
     axis.text.x = element_text(angle = 45, hjust = 1),
     axis.text.y = element_text(size = 10, color = "grey20"),
@@ -466,34 +346,3 @@ ggplot(genomes_within_sample, aes(x = sample_name, y = species, color = phylum, 
     color = "Phylum"
   )
 ```
-
-## Analysis Pipeline
-
-```{mermaid}
-flowchart TD
-    A[Raw PacBio HiFi Reads] --> B[chopper - Read QC]
-    B --> C[Kraken2 on Reads - Community Composition]
-    B --> D[metaMDBG - Assembly]
-    C --> C1[Alpha & Beta Diversity]
-    D --> E[Prodigal - Gene Prediction]
-    E --> F[eggNOG-mapper - Functional Annotation]
-    D --> H[seqkit - Extract Circular Contigs]
-    H --> I[geNomad - Classification]
-    I --> J[Chromosomes]
-    I --> K[Viruses]
-    I --> L[Plasmids]
-    J --> J1[CheckM2 - Quality Assessment]
-    J1 --> J2[Kraken2 - Contig Taxonomy]
-    J2 --> M[Bakta - Genome Annotation]
-    J2 --> S[Taxonomy-Function Linkage]
-    F --> S
-    M --> N[LoVis4u / gggenes - Visualization]
-    K --> O[CheckV - Quality Assessment]
-    O --> P[Pharokka - Phage Annotation]
-    L --> Q[Prodigal + eggNOG - Plasmid Functions]
-    F --> R[COG Functional Profiles]
-    P --> T[Visualize with gggenes / LoVis4u]
-    Q --> T
-    Q --> Q2[Plasmid vs Chromosome Function Comparison]
-```
-

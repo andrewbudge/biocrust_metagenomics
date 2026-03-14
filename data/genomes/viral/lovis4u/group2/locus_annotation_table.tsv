@@ -1,0 +1,5 @@
+sequence_id	length	coordinates	circular	description	order	group	initial_order
+SRR35809155_ctg108|provirus_3243057_3288390	45334	1:45334:1	1		0	1	2
+SRR35809332_ctg1415|provirus_2264398_2309731	45334	1:45334:1	1		1	1	0
+SRR35808553_ctg921|provirus_684962_730295	45334	1:45334:1	1		2	1	3
+SRR35808611_ctg442|provirus_4085068_4130200	45133	1:45133:1	1		3	1	1

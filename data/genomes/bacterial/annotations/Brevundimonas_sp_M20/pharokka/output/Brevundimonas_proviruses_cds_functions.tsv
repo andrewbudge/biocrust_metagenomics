@@ -1,0 +1,65 @@
+Description	Count	contig
+CDS	66	SRR35809155_ctg370|provirus_105204_146413
+connector	0	SRR35809155_ctg370|provirus_105204_146413
+DNA, RNA and nucleotide metabolism	5	SRR35809155_ctg370|provirus_105204_146413
+head and packaging	7	SRR35809155_ctg370|provirus_105204_146413
+integration and excision	1	SRR35809155_ctg370|provirus_105204_146413
+lysis	1	SRR35809155_ctg370|provirus_105204_146413
+moron, auxiliary metabolic gene and host takeover	1	SRR35809155_ctg370|provirus_105204_146413
+other	0	SRR35809155_ctg370|provirus_105204_146413
+tail	1	SRR35809155_ctg370|provirus_105204_146413
+transcription regulation	2	SRR35809155_ctg370|provirus_105204_146413
+unknown function	48	SRR35809155_ctg370|provirus_105204_146413
+tRNAs	0	SRR35809155_ctg370|provirus_105204_146413
+CRISPRs	0	SRR35809155_ctg370|provirus_105204_146413
+tmRNAs	0	SRR35809155_ctg370|provirus_105204_146413
+VFDB_Virulence_Factors	0	SRR35809155_ctg370|provirus_105204_146413
+CARD_AMR_Genes	0	SRR35809155_ctg370|provirus_105204_146413
+CDS	76	SRR35809155_ctg370|provirus_1105152_1159557
+connector	1	SRR35809155_ctg370|provirus_1105152_1159557
+DNA, RNA and nucleotide metabolism	8	SRR35809155_ctg370|provirus_1105152_1159557
+head and packaging	4	SRR35809155_ctg370|provirus_1105152_1159557
+integration and excision	2	SRR35809155_ctg370|provirus_1105152_1159557
+lysis	1	SRR35809155_ctg370|provirus_1105152_1159557
+moron, auxiliary metabolic gene and host takeover	1	SRR35809155_ctg370|provirus_1105152_1159557
+other	3	SRR35809155_ctg370|provirus_1105152_1159557
+tail	3	SRR35809155_ctg370|provirus_1105152_1159557
+transcription regulation	1	SRR35809155_ctg370|provirus_1105152_1159557
+unknown function	52	SRR35809155_ctg370|provirus_1105152_1159557
+tRNAs	4	SRR35809155_ctg370|provirus_1105152_1159557
+CRISPRs	0	SRR35809155_ctg370|provirus_1105152_1159557
+tmRNAs	0	SRR35809155_ctg370|provirus_1105152_1159557
+VFDB_Virulence_Factors	0	SRR35809155_ctg370|provirus_1105152_1159557
+CARD_AMR_Genes	0	SRR35809155_ctg370|provirus_1105152_1159557
+CDS	14	SRR35809155_ctg370|provirus_1812884_1822384
+connector	1	SRR35809155_ctg370|provirus_1812884_1822384
+DNA, RNA and nucleotide metabolism	0	SRR35809155_ctg370|provirus_1812884_1822384
+head and packaging	3	SRR35809155_ctg370|provirus_1812884_1822384
+integration and excision	0	SRR35809155_ctg370|provirus_1812884_1822384
+lysis	0	SRR35809155_ctg370|provirus_1812884_1822384
+moron, auxiliary metabolic gene and host takeover	0	SRR35809155_ctg370|provirus_1812884_1822384
+other	0	SRR35809155_ctg370|provirus_1812884_1822384
+tail	1	SRR35809155_ctg370|provirus_1812884_1822384
+transcription regulation	0	SRR35809155_ctg370|provirus_1812884_1822384
+unknown function	9	SRR35809155_ctg370|provirus_1812884_1822384
+tRNAs	0	SRR35809155_ctg370|provirus_1812884_1822384
+CRISPRs	0	SRR35809155_ctg370|provirus_1812884_1822384
+tmRNAs	0	SRR35809155_ctg370|provirus_1812884_1822384
+VFDB_Virulence_Factors	0	SRR35809155_ctg370|provirus_1812884_1822384
+CARD_AMR_Genes	0	SRR35809155_ctg370|provirus_1812884_1822384
+CDS	50	SRR35809155_ctg370|provirus_2896115_2935207
+connector	1	SRR35809155_ctg370|provirus_2896115_2935207
+DNA, RNA and nucleotide metabolism	1	SRR35809155_ctg370|provirus_2896115_2935207
+head and packaging	4	SRR35809155_ctg370|provirus_2896115_2935207
+integration and excision	1	SRR35809155_ctg370|provirus_2896115_2935207
+lysis	1	SRR35809155_ctg370|provirus_2896115_2935207
+moron, auxiliary metabolic gene and host takeover	0	SRR35809155_ctg370|provirus_2896115_2935207
+other	2	SRR35809155_ctg370|provirus_2896115_2935207
+tail	4	SRR35809155_ctg370|provirus_2896115_2935207
+transcription regulation	2	SRR35809155_ctg370|provirus_2896115_2935207
+unknown function	34	SRR35809155_ctg370|provirus_2896115_2935207
+tRNAs	0	SRR35809155_ctg370|provirus_2896115_2935207
+CRISPRs	0	SRR35809155_ctg370|provirus_2896115_2935207
+tmRNAs	0	SRR35809155_ctg370|provirus_2896115_2935207
+VFDB_Virulence_Factors	0	SRR35809155_ctg370|provirus_2896115_2935207
+CARD_AMR_Genes	0	SRR35809155_ctg370|provirus_2896115_2935207

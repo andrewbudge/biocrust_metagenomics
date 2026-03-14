@@ -1,0 +1,17 @@
+contig_id	contig_length	provirus	proviral_length	gene_count	viral_genes	host_genes	checkv_quality	miuvig_quality	completeness	completeness_method	contamination	kmer_freq	warnings
+SRR35808900_ctg3305	41348	No	NA	72	21	1	High-quality	High-quality	95.56	AAI-based (medium-confidence)	0.0	1.0	
+SRR35808553_ctg921|provirus_684962_730295	45334	No	NA	63	29	0	High-quality	High-quality	100.0	AAI-based (medium-confidence)	0.0	1.0	
+SRR35808553_ctg921|provirus_1054300_1093930	39631	No	NA	60	21	0	High-quality	High-quality	100.0	AAI-based (medium-confidence)	0.0	1.0	
+SRR35808611_ctg78|provirus_2163821_2228021	64201	No	NA	68	11	2	High-quality	High-quality	100.0	AAI-based (medium-confidence)	0.0	1.0	
+SRR35808611_ctg442|provirus_3721232_3760862	39631	No	NA	60	21	0	High-quality	High-quality	100.0	AAI-based (medium-confidence)	0.0	1.0	
+SRR35808611_ctg442|provirus_4085068_4130200	45133	No	NA	62	29	0	High-quality	High-quality	100.0	AAI-based (medium-confidence)	0.0	1.0	
+SRR35808611_ctg514|provirus_397177_435424	38248	No	NA	50	1	2	High-quality	High-quality	100.0	AAI-based (medium-confidence)	0.0	1.0	
+SRR35808611_ctg707|provirus_5227802_5272024	44223	No	NA	53	10	1	High-quality	High-quality	100.0	AAI-based (high-confidence)	0.0	1.02	
+SRR35808611_ctg1214|provirus_771119_813367	42249	No	NA	56	15	1	High-quality	High-quality	100.0	AAI-based (medium-confidence)	0.0	1.0	
+SRR35809155_ctg108|provirus_3243057_3288390	45334	No	NA	63	29	0	High-quality	High-quality	100.0	AAI-based (medium-confidence)	0.0	1.0	
+SRR35809155_ctg108|provirus_3612395_3652025	39631	No	NA	60	21	0	High-quality	High-quality	100.0	AAI-based (medium-confidence)	0.0	1.0	
+SRR35809332_ctg866|provirus_3351243_3393491	42249	No	NA	56	15	1	High-quality	High-quality	100.0	AAI-based (medium-confidence)	0.0	1.0	
+SRR35809332_ctg1415|provirus_2264398_2309731	45334	No	NA	63	29	0	High-quality	High-quality	100.0	AAI-based (medium-confidence)	0.0	1.0	
+SRR35809332_ctg1415|provirus_2633736_2673366	39631	No	NA	60	21	0	High-quality	High-quality	100.0	AAI-based (medium-confidence)	0.0	1.0	
+SRR35809336_ctg10052|provirus_1805875_1849128	43254	No	NA	61	25	1	High-quality	High-quality	100.0	AAI-based (high-confidence)	0.0	1.0	
+SRR35809336_ctg10687|provirus_4211115_4255250	44136	No	NA	63	25	3	High-quality	High-quality	100.0	AAI-based (medium-confidence)	0.0	1.0	
