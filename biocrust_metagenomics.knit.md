@@ -14,10 +14,7 @@ format:
     code-summary: "Show code"
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
-source("scripts/R/shared.R")
-```
+
 
 ## Overview and Project goals:
 
@@ -53,30 +50,13 @@ PacBio HiFi shotgun metagenomic reads from Cryptobiotic soil across multiple sit
 
 This was a gold mine. Not only was there data, there was a lot of high-quality data! I skimmed through and decided to use six samples for my project. Two samples from Utah, Arizona, and New Mexico:
 
-```{r, echo=FALSE, fig.width=10, fig.height=6}
-library(ggrepel)
-library(maps)
 
-map_info <- meta_data %>%
-  separate(lat_lon, into = c("lat", "lon"), sep = " N ") %>%
-  mutate(
-    lat = as.numeric(lat),
-    lon = -parse_number(lon),
-    sample = str_extract(title, "(?<=- ).*")
-  ) %>%
-  select(sample, lat, lon)
+::: {.cell}
+::: {.cell-output-display}
+![](biocrust_metagenomics_files/figure-html/unnamed-chunk-1-1.png){width=960}
+:::
+:::
 
-us_map <- map_data("state") %>%
-  filter(region %in% c("utah", "arizona", "new mexico"))
-
-ggplot() +
-  geom_polygon(data = us_map, aes(x = long, y = lat, group = group),
-               fill = "white", color = "black") +
-  geom_point(data = map_info, aes(x = lon, y = lat), size = 2) +
-  geom_text_repel(data = map_info, aes(x = lon, y = lat, label = sample),
-                  size = 3, box.padding = .5) +
-  theme_minimal()
-```
 
 The samples from Utah and Arizona were taken at the same sites respectively, while the New Mexico Samples were taken a different sites int the state. This lets us see how communities can differ at the same site while also seeing who the differ from site to site.
 
@@ -94,7 +74,10 @@ The first thing I wanted to see is what kinds of bacteria are living in the Cryp
 
 I decided to look at are results at a phylum level, to understand an overall composition of the microbial community. I took the Kraken2 results of all samples and combined them into a master dataset
 
-```{r, echo=TRUE}
+
+::: {.cell}
+
+```{.r .cell-code}
 master_kraken2_data <- list.files("data/reads/taxonomy/reports", full.names = TRUE) %>%
   map_dfr(function(f) {
     srr_num <- basename(gsub(".report", "", f))
@@ -104,18 +87,28 @@ master_kraken2_data <- list.files("data/reads/taxonomy/reports", full.names = TR
   left_join(meta_data, by = "srr") %>%
   mutate(sample = str_extract(title, "(?<=- ).*"))
 ```
+:::
+
 
 I then filtered the dataset to pull out the phylum rank and to only include organisms that were at least 1% present in the sample.
 
-```{r, echo=TRUE}
+
+::: {.cell}
+
+```{.r .cell-code}
 phylum_data <- master_kraken2_data %>%
   filter(rank == "P", pct > 1) %>%
   select(sample, name, pct, geo_loc_name)
 ```
+:::
+
 
 and finally, I created a bar chart to visualize the results.
 
-```{r, echo=TRUE, fig.width=10, fig.height=6}
+
+::: {.cell}
+
+```{.r .cell-code}
 ggplot(phylum_data, aes(x = sample, y = pct, fill = fct_reorder(name, pct))) +
   geom_col() +
   facet_wrap(~ geo_loc_name, scales = "free_x") +
@@ -134,13 +127,22 @@ ggplot(phylum_data, aes(x = sample, y = pct, fill = fct_reorder(name, pct))) +
   guides(fill = guide_legend(title = NULL, nrow = 2))
 ```
 
+::: {.cell-output-display}
+![](biocrust_metagenomics_files/figure-html/unnamed-chunk-4-1.png){width=960}
+:::
+:::
+
+
 While each sample has a unique compositon of bacteria living within them, we do some some trends. At least 50% if the community is composed of both Pseudomonadota and Cyanobacteriota. We will look more into what these groups are doing later.
 
 ### How Diverse are they? (Alpha and Beta Diversity)
 
 I could see that there was a lot of differences between the samples, but how much exactly? Was there a lot of diversity within the samples themselves? Two statical tools helped me answer that questions: Alpha and Beta diversity. The `vegan` package in R allows to at a look at this. Before we could do that I had to transform the data into something that Vegan could use. WE filtered things down to a species level and every species we included had to have at least 10 reads mapped to it. 
 
-```{r, echo=TRUE}
+
+::: {.cell}
+
+```{.r .cell-code}
 species_count <- master_kraken2_data %>%
   filter(rank == "S", reads_direct > 10) %>% 
   select(geo_loc_name, sample, name, reads_direct)
@@ -156,12 +158,17 @@ vegan_matrix <- vegan_species_data %>%
   select(-sample, -geo_loc_name) %>%
   replace(is.na(.), 0)
 ```
+:::
+
 
 #### Alpha Diversity
 
 Alpha Diversity is a measurement of diversity within a single a sample. It asks two questions: How many different species are present and how evenly are they distributed? I used the shannon index to capture this, as it takes into account both factors. The higher the Shannon Value, the more diverse the Biocrust will be.
 
-```{r, echo=TRUE, , fig.width=10, fig.height=6}
+
+::: {.cell}
+
+```{.r .cell-code}
 library(vegan)
 
 sample_info$shannon <- diversity(vegan_matrix, index = "shannon")
@@ -182,8 +189,13 @@ ggplot(sample_info, aes(x = sample, y = shannon, fill = geo_loc_name)) +
     legend.position = "none",
     plot.title = element_text(hjust = 0.5)
   )
-
 ```
+
+::: {.cell-output-display}
+![](biocrust_metagenomics_files/figure-html/unnamed-chunk-6-1.png){width=960}
+:::
+:::
+
 
 According to the Shannon index, The SON57 sample from far south arizona was the least diverse of the sites. Site SEV30 from central New Mexico, was our most diverse, with a Shannon score above 6. Shannon values for soil metagenomics typically fall between 4-7, so SEV30 has a very diverse community. There is a possible trend where samples from more southern, arid sites show lower diversity, though with only six samples this would need further testing to confirm. 
 
@@ -191,7 +203,10 @@ According to the Shannon index, The SON57 sample from far south arizona was the 
 
 Beta Diversity is a measurement of the diversity between samples. Bray-Curtis dissimilarity was used for this analysis, which compares species composition between every pair of samples. PCoA (Principal Coordinates Analysis) was then used to plot the relationship in 2D space. The closer the points are on the plot, the more similar they are and vice versa.
 
-```{r, echo=TRUE,  fig.width=10, fig.height=6}
+
+::: {.cell}
+
+```{.r .cell-code}
 pcoa_df <- vegdist(vegan_matrix, method = "bray") %>%
   cmdscale(k = 2) %>%
   data.frame(sample = sample_info$sample, geo_loc_name = sample_info$geo_loc_name)
@@ -213,6 +228,12 @@ ggplot(pcoa_df, aes(x = X1, y = X2, color = geo_loc_name)) +
   guides(color = guide_legend(title = NULL, nrow = 1))
 ```
 
+::: {.cell-output-display}
+![](biocrust_metagenomics_files/figure-html/unnamed-chunk-7-1.png){width=960}
+:::
+:::
+
+
 The Utah samples (HS003, HSN023) and Arizona samples (SON57, SON60) each clustered tightly together, which makes sense — each pair was collected from the same site. The two New Mexico samples (CYAN3, SEV30) were more spread apart, reflecting the fact that they were collected from different locations within the state. CYAN3 in particular stands out as the most compositionally distinct sample, sitting far from all the others on the plot.
 
 ## From Reads to Genes
@@ -224,7 +245,10 @@ Using the same QC'd reads that we feed in Kraken2, I gave them over to metaMDBG,
 These contigs ranged from small fragments to potential complete bacterial genomes. we used `prodigal`, a program that searches for potential proteins that could be coded by the contigs. We then pass those predicted proteins to `eggNOG-mapper`, which maps them to known protein families and then assigns them a broad functional group like "Energy production" or "Amino acid metabolism". These groups are called COG categories.
 Pulling the data into R, I was able to to to calculate the proportion of the predicted proteins that mapped to which COG category within the samples. 
 
-```{r, echo=TRUE}
+
+::: {.cell}
+
+```{.r .cell-code}
 eggnog_data <- list.files("data/assembly_COG/eggNOG-mapper_output",
                           pattern = "*.emapper.annotations",
                           recursive = TRUE, full.names = TRUE) %>%
@@ -248,11 +272,15 @@ COG_proportions <- COG_data %>%
   ungroup() %>%
   mutate(sample = factor(sample, levels = c("CYAN3", "SON57", "HS003", "SEV30", "SON60", "HSN023")))
 ```
+:::
+
 
 With the data cleaned and proportions calculated, we could plot it to see what all the mircobes in the biocrust were up too.
 
-```{r, echo=TRUE,  fig.width=10, fig.height=6}
 
+::: {.cell}
+
+```{.r .cell-code}
 ggplot(COG_proportions, aes(x = reorder(COG_description, proportion), y = proportion, fill = sample)) +
   geom_col(position = "dodge") +
   coord_flip() +
@@ -267,8 +295,13 @@ ggplot(COG_proportions, aes(x = reorder(COG_description, proportion), y = propor
     axis.title = element_text(size = 14),
     plot.title.position = "plot"
   )
-
 ```
+
+::: {.cell-output-display}
+![](biocrust_metagenomics_files/figure-html/unnamed-chunk-9-1.png){width=960}
+:::
+:::
+
 
 The functional profiles of the samples are all very similar to each other, showing that despite geographic distance and diversity, the Cryptobiotic soil all have the same underlying functions at play. These microbes live in some of the most extreme environments and must have the capability to survive. The most commonly appearing COG category is Amino Acid Metabolism. Resource availability in the environment is very limited, and being able to process what is there is crucial. One organism's waste is another's food source. Another category I think is interesting is Carbohydrate metabolism. This is the sugar economy of the biocrust. Cyanobacteria produce extracellular polysaccharides, the sticky sugars that physically bind soil particles together and form the "crust" in biocrust. Other organisms then break those sugars down for energy. So the very structure of the crust is built and maintained by the metabolic activity of the organisms living in it.
 
@@ -279,7 +312,10 @@ Like the reads, we filtered the contigs. Bacterial genomes are typically circula
 
 Now that I had some candidate genomes, I wanted to know what they were. Kraken2 was once again used to identify what the contigs were.
 
-```{r, echo=TRUE, fig.width=12, fig.height=10}
+
+::: {.cell}
+
+```{.r .cell-code}
 contig_taxonomy <- read_tsv(
   "data/genomes/bacterial/taxonomy/contig_taxonomy.tsv",
   col_names = c("contig", "species", "taxid")
@@ -347,9 +383,18 @@ ggplot(genomes_within_sample, aes(x = sample_name, y = species, color = phylum, 
   )
 ```
 
+::: {.cell-output-display}
+![](biocrust_metagenomics_files/figure-html/unnamed-chunk-10-1.png){width=1152}
+:::
+:::
+
+
 Some species had multiple chromosomes recovered across the samples. To get a sense of which species were most commonly assembled, I counted the total number of chromosomes recovered per species.
 
-```{r, echo=TRUE, fig.width=10, fig.height=8}
+
+::: {.cell}
+
+```{.r .cell-code}
 chromosome_counts <- genomes_within_sample %>%
   mutate(species = as.character(species)) %>%
   count(species, name = "n_chromosomes")
@@ -366,3 +411,10 @@ ggplot(chromosome_counts, aes(x = n_chromosomes, y = reorder(species, n_chromoso
     plot.title = element_text(hjust = 0.5)
   )
 ```
+
+::: {.cell-output-display}
+![](biocrust_metagenomics_files/figure-html/unnamed-chunk-11-1.png){width=960}
+:::
+:::
+
+

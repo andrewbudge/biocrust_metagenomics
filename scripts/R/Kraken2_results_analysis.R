@@ -44,6 +44,27 @@ species_count <- master_kraken2_data %>%
   filter(rank == "S", reads_direct > 10) %>%
   select(geo_loc_name, sample, name, reads_direct)
 
+# Species count per sample (horizontal bar plot)
+species_per_sample <- species_count %>%
+  group_by(sample, geo_loc_name) %>%
+  summarise(n_species = n_distinct(name), .groups = "drop") %>%
+  mutate(geo_loc_name = str_replace(geo_loc_name, "USA: ", ""))
+
+ggplot(species_per_sample, aes(x = n_species, y = reorder(sample, n_species), fill = geo_loc_name)) +
+  geom_col() +
+  scale_fill_viridis_d(option = "A", begin = 0.1, end = 0.85) +
+  labs(
+    title = "Species Detected per Sample",
+    x = "Number of Species",
+    y = NULL,
+    fill = "Location"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    legend.position = "bottom"
+  )
+
 vegan_species_data <- species_count %>%
   pivot_wider(names_from = name, values_from = reads_direct)
 
@@ -161,6 +182,23 @@ species_order <- genomes_within_sample %>%
 
 genomes_within_sample <- genomes_within_sample %>%
   mutate(species = factor(species, levels = rev(species_order)))
+
+# Chromosome count per species (horizontal bar plot)
+chromosome_counts <- genomes_within_sample %>%
+  mutate(species = as.character(species)) %>%
+  count(species, name = "n_chromosomes")
+
+ggplot(chromosome_counts, aes(x = n_chromosomes, y = reorder(species, n_chromosomes))) +
+  geom_col(fill = viridis::viridis(1, option = "A", begin = 0.7)) +
+  labs(
+    title = "Recovered Bacterial Chromosomes",
+    x = "Number of Chromosomes",
+    y = NULL
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    plot.title = element_text(hjust = 0.5)
+  )
 
 ggplot(genomes_within_sample, aes(x = sample_name, y = species, color = phylum, size = coverage)) +
   geom_point() +
